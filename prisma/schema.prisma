@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model TrainingDay {
+  id        Int        @id @default(autoincrement())
+  dayOfWeek Int        @unique
+  name      String
+  exercises Exercise[]
+}
+
+model Exercise {
+  id            Int         @id @default(autoincrement())
+  trainingDayId Int
+  trainingDay   TrainingDay @relation(fields: [trainingDayId], references: [id], onDelete: Cascade)
+  name          String
+  targetSets    Int
+  targetReps    String
+  order         Int         @default(0)
+}
+
+model TrainingSession {
+  id        Int          @id @default(autoincrement())
+  date      DateTime
+  dayOfWeek Int
+  notes     String?
+  sets      WorkoutSet[]
+}
+
+model WorkoutSet {
+  id        Int             @id @default(autoincrement())
+  sessionId Int
+  session   TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise  String
+  setNumber Int
+  reps      Int
+  weight    Float
+}
+
+model Meal {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  name        String
+  description String?
+  calories    Int?
+  mealTime    String?
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  date        DateTime?
+  title       String
+  priority    String    @default("MEDIUM")
+  spontaneous Boolean   @default(false)
+  done        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model Trade {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  instrument String
+  direction  String
+  entry      Float
+  stopLoss   Float
+  takeProfit Float
+  exit       Float?
+  pnl        Float?
+  result     String?
+  emotion    Int?
+  notes      String?
+}
+
+model DailyReview {
+  id           Int      @id @default(autoincrement())
+  date         DateTime @unique
+  wentWell     String
+  improve      String
+  energy       Int
+  tomorrowPlan String
+}
+
+model HabitLog {
+  id         Int      @id @default(autoincrement())
+  date       DateTime @unique
+  sport      Boolean  @default(false)
+  journaling Boolean  @default(false)
+  tiktokOk   Boolean  @default(false)
+}
