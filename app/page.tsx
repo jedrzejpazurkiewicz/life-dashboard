@@ -12,26 +12,29 @@ export default async function HomePage() {
   const { start, end } = getTodayRange()
   const today = new Date()
   const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay()
+  const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-  const [todayTasks, todayMeals, trainingDay, habitLog] = await Promise.all([
+  const [todayTasks, trainingDay, habitLog, recentHabitLogs, todaySession] = await Promise.all([
     prisma.task.findMany({
       where: { date: { gte: start, lte: end } },
       orderBy: [{ done: 'asc' }, { priority: 'asc' }],
     }),
-    prisma.meal.count({ where: { date: { gte: start, lte: end } } }),
     prisma.trainingDay.findUnique({
       where: { dayOfWeek },
       include: { exercises: { orderBy: { order: 'asc' } } },
     }),
     prisma.habitLog.findFirst({ where: { date: { gte: start, lte: end } } }),
+    prisma.habitLog.findMany({ where: { date: { gte: thirtyDaysAgo } }, orderBy: { date: 'desc' } }),
+    prisma.trainingSession.findFirst({ where: { date: { gte: start, lte: end } } }),
   ])
 
   return (
     <DashboardClient
       tasks={todayTasks}
-      mealsCount={todayMeals}
       trainingDay={trainingDay}
       habitLog={habitLog}
+      recentHabitLogs={recentHabitLogs}
+      trainedToday={!!todaySession}
       today={today.toISOString()}
     />
   )

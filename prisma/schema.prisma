@@ -62,18 +62,24 @@ model Task {
 }
 
 model Trade {
-  id         Int      @id @default(autoincrement())
-  date       DateTime
-  instrument String
-  direction  String
-  entry      Float
-  stopLoss   Float
-  takeProfit Float
-  exit       Float?
-  pnl        Float?
-  result     String?
-  emotion    Int?
-  notes      String?
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  instrument  String
+  session     String?
+  direction   String
+  entry       Float
+  stopLoss    Float
+  takeProfit  Float
+  takeProfit2 Float?
+  takeProfit3 Float?
+  exit        Float?
+  size        Float?   @default(1)
+  pnl         Float?
+  result      String?
+  emotion     Int?
+  notes       String?
+  chartImage  String?
+  reasons     String?
 }
 
 model DailyReview {
@@ -91,4 +97,24 @@ model HabitLog {
   sport      Boolean  @default(false)
   journaling Boolean  @default(false)
   tiktokOk   Boolean  @default(false)
+}
+
+model Vocabulary {
+  id         Int      @id @default(autoincrement())
+  word       String
+  definition String
+  example    String?
+  addedAt    DateTime @default(now())
+  mastered   Boolean  @default(false)
+}
+
+model PropFirm {
+  id          Int      @id @default(autoincrement())
+  firm        String
+  accountSize Float
+  phase       String
+  status      String   @default("ACTIVE")
+  currentPnl  Float    @default(0)
+  startDate   DateTime @default(now())
+  notes       String?
 }

@@ -1,18 +1,46 @@
 'use client'
 
+import { useState } from 'react'
 import type { HabitLog } from '@/app/generated/prisma/client'
 import { CheckSquare, Dumbbell, BookOpen, Flame, TrendingUp } from 'lucide-react'
 
+type RangeKey = '7d' | '30d' | '90d'
+const RANGES: { key: RangeKey; label: string; days: number }[] = [
+  { key: '7d', label: '7 dni', days: 7 },
+  { key: '30d', label: '30 dni', days: 30 },
+  { key: '90d', label: '90 dni', days: 90 },
+]
+
 interface Props {
-  weekDone: number
-  weekTotal: number
-  weekTraining: number
-  weekReviews: number
+  tasks: { done: boolean; createdAt: Date }[]
+  trainingSessions: { date: Date }[]
+  reviews: { date: Date; energy: number }[]
   habitLogs: HabitLog[]
 }
 
-export default function StatsClient({ weekDone, weekTotal, weekTraining, weekReviews, habitLogs }: Props) {
-  const taskRate = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0
+function isSameDay(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+function daysAgo(n: number) {
+  const d = new Date()
+  d.setDate(d.getDate() - n)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+export default function StatsClient({ tasks, trainingSessions, reviews, habitLogs }: Props) {
+  const [range, setRange] = useState<RangeKey>('7d')
+  const days = RANGES.find(r => r.key === range)!.days
+  const cutoff = daysAgo(days)
+
+  const filteredTasks = tasks.filter(t => new Date(t.createdAt) >= cutoff)
+  const doneTasks = filteredTasks.filter(t => t.done).length
+  const totalTasks = filteredTasks.length
+  const taskRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0
+
+  const filteredSessions = trainingSessions.filter(s => new Date(s.date) >= cutoff)
+  const filteredReviews = reviews.filter(r => new Date(r.date) >= cutoff)
 
   const sportStreak = calcStreak(habitLogs, 'sport')
   const journalStreak = calcStreak(habitLogs, 'journaling')
@@ -21,17 +49,36 @@ export default function StatsClient({ weekDone, weekTotal, weekTraining, weekRev
 
   return (
     <div className="space-y-5 animate-in">
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: '#f0fdf4' }}>Statystyki</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(240,253,244,0.4)' }}>Ostatnie 7 dni</p>
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: '#f0fdf4' }}>Statystyki</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(240,253,244,0.4)' }}>Ostatnie {days} dni</p>
+        </div>
+        {/* Range toggle */}
+        <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(34,197,94,0.1)' }}>
+          {RANGES.map(r => (
+            <button
+              key={r.key}
+              onClick={() => setRange(r.key)}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200"
+              style={{
+                background: range === r.key ? 'rgba(34,197,94,0.15)' : 'transparent',
+                color: range === r.key ? '#4ADE80' : 'rgba(240,253,244,0.4)',
+                border: range === r.key ? '1px solid rgba(34,197,94,0.25)' : '1px solid transparent',
+              }}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Week stats */}
+      {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3">
-        <StatCard icon={<CheckSquare size={18} />} label="Zadania" value={`${weekDone}/${weekTotal}`} sub={`${taskRate}% done`} color="#22C55E" />
-        <StatCard icon={<Dumbbell size={18} />} label="Treningi" value={weekTraining.toString()} sub="sesji" color="#8b5cf6" />
-        <StatCard icon={<BookOpen size={18} />} label="Reviewy" value={weekReviews.toString()} sub="z 7 dni" color="#f59e0b" />
-        <StatCard icon={<TrendingUp size={18} />} label="Konsekwencja" value={`${Math.round(((sportStreak + journalStreak) / 14) * 100)}%`} sub="sport + journal" color="#ec4899" />
+        <StatCard icon={<CheckSquare size={18} />} label="Zadania" value={`${doneTasks}/${totalTasks}`} sub={`${taskRate}% done`} color="#22C55E" />
+        <StatCard icon={<Dumbbell size={18} />} label="Treningi" value={filteredSessions.length.toString()} sub="sesji" color="#8b5cf6" />
+        <StatCard icon={<BookOpen size={18} />} label="Reviewy" value={filteredReviews.length.toString()} sub={`z ${days} dni`} color="#f59e0b" />
+        <StatCard icon={<TrendingUp size={18} />} label="Konsekwencja" value={`${taskRate}%`} sub="zadania" color="#ec4899" />
       </div>
 
       {/* Streaks */}
@@ -43,7 +90,7 @@ export default function StatsClient({ weekDone, weekTotal, weekTraining, weekRev
         </div>
       </div>
 
-      {/* 7-day habit grid */}
+      {/* 7-day habit grid (always last 7 days as snapshot) */}
       <div className="card p-5 space-y-4">
         <h2 className="font-semibold text-sm" style={{ color: '#f0fdf4' }}>Ostatnie 7 dni</h2>
         <div className="space-y-3">
@@ -130,15 +177,9 @@ function StreakRow({ icon, label, streak, color }: {
       <div className="flex items-center gap-2">
         <div
           className="h-2 rounded-full transition-all duration-700"
-          style={{
-            width: `${Math.min(streak * 12, 80)}px`,
-            background: `linear-gradient(90deg, ${color}, ${color}88)`,
-            minWidth: streak > 0 ? '8px' : '0',
-          }}
+          style={{ width: `${Math.min(streak * 12, 80)}px`, background: `linear-gradient(90deg, ${color}, ${color}88)`, minWidth: streak > 0 ? '8px' : '0' }}
         />
-        <span className="text-sm font-bold w-8 text-right" style={{ color }}>
-          {streak}d
-        </span>
+        <span className="text-sm font-bold w-8 text-right" style={{ color }}>{streak}d</span>
       </div>
     </div>
   )
@@ -147,7 +188,7 @@ function StreakRow({ icon, label, streak, color }: {
 function calcStreak(logs: HabitLog[], field: 'sport' | 'journaling' | 'tiktokOk'): number {
   let streak = 0
   const today = new Date()
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 90; i++) {
     const d = new Date(today)
     d.setDate(d.getDate() - i)
     const log = logs.find(l => isSameDay(new Date(l.date), d))
@@ -166,10 +207,4 @@ function getLast7Days(): Date[] {
     days.push(d)
   }
   return days
-}
-
-function isSameDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
 }

@@ -5,20 +5,22 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Dumbbell,
-  UtensilsCrossed,
+  Languages,
   CheckSquare,
   BookOpen,
   BarChart2,
   TrendingUp,
+  CalendarDays,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/tasks', icon: CheckSquare, label: 'Zadania' },
-  { href: '/training', icon: Dumbbell, label: 'Trening' },
-  { href: '/nutrition', icon: UtensilsCrossed, label: 'Żywienie' },
+  { href: '/training', icon: Dumbbell, label: 'Kalistenika' },
+  { href: '/polski', icon: Languages, label: 'Polski' },
   { href: '/review', icon: BookOpen, label: 'Review' },
   { href: '/stats', icon: BarChart2, label: 'Statystyki' },
+  { href: '/calendar', icon: CalendarDays, label: 'Życie' },
   { href: '/trading', icon: TrendingUp, label: 'Trading' },
 ]
 

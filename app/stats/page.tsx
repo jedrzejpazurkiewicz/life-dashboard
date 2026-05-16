@@ -3,32 +3,32 @@ import StatsClient from '@/components/StatsClient'
 
 export default async function StatsPage() {
   const today = new Date()
-  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+  const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000)
 
-  const [taskStats, trainingCount, reviewCount, habitLogs] = await Promise.all([
-    prisma.task.groupBy({
-      by: ['done'],
-      _count: { id: true },
-      where: { createdAt: { gte: weekAgo } },
+  const [tasks, trainingSessions, reviews, habitLogs] = await Promise.all([
+    prisma.task.findMany({
+      where: { createdAt: { gte: ninetyDaysAgo } },
+      select: { done: true, createdAt: true },
     }),
-    prisma.trainingSession.count({ where: { date: { gte: weekAgo } } }),
-    prisma.dailyReview.count({ where: { date: { gte: weekAgo } } }),
+    prisma.trainingSession.findMany({
+      where: { date: { gte: ninetyDaysAgo } },
+      select: { date: true },
+    }),
+    prisma.dailyReview.findMany({
+      where: { date: { gte: ninetyDaysAgo } },
+      select: { date: true, energy: true },
+    }),
     prisma.habitLog.findMany({
-      where: { date: { gte: monthAgo } },
+      where: { date: { gte: ninetyDaysAgo } },
       orderBy: { date: 'desc' },
     }),
   ])
 
-  const doneTasks = taskStats.find(s => s.done)?._count.id ?? 0
-  const totalTasks = taskStats.reduce((s, g) => s + g._count.id, 0)
-
   return (
     <StatsClient
-      weekDone={doneTasks}
-      weekTotal={totalTasks}
-      weekTraining={trainingCount}
-      weekReviews={reviewCount}
+      tasks={tasks}
+      trainingSessions={trainingSessions}
+      reviews={reviews}
       habitLogs={habitLogs}
     />
   )

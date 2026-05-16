@@ -12,63 +12,68 @@ async function main() {
   const plan = [
     {
       dayOfWeek: 1,
-      name: 'Klatka + Triceps',
+      name: 'Push — Klatka / Triceps / Barki',
       exercises: [
-        { name: 'Wyciskanie sztangi', targetSets: 4, targetReps: '6-10', order: 0 },
-        { name: 'Wyciskanie hantli skos', targetSets: 3, targetReps: '10-12', order: 1 },
-        { name: 'Rozpiętki', targetSets: 3, targetReps: '12-15', order: 2 },
-        { name: 'Wyciskanie francuskiego', targetSets: 3, targetReps: '10-12', order: 3 },
-        { name: 'Pompki wąski chwyt', targetSets: 3, targetReps: '12-15', order: 4 },
+        { name: 'Pompki szerokie', targetSets: 4, targetReps: '8-15', order: 0 },
+        { name: 'Pompki diamentowe', targetSets: 3, targetReps: '10-15', order: 1 },
+        { name: 'Dipy (krzesło / drążek)', targetSets: 3, targetReps: 'max', order: 2 },
+        { name: 'Pike Push-up', targetSets: 3, targetReps: '8-12', order: 3 },
+        { name: 'Pompki odwrócone', targetSets: 3, targetReps: '10-15', order: 4 },
       ],
     },
     {
       dayOfWeek: 2,
-      name: 'Plecy + Biceps',
+      name: 'Pull — Plecy / Biceps',
       exercises: [
-        { name: 'Martwy ciąg', targetSets: 4, targetReps: '5-8', order: 0 },
-        { name: 'Podciąganie', targetSets: 4, targetReps: '6-10', order: 1 },
-        { name: 'Wiosłowanie sztangą', targetSets: 3, targetReps: '8-12', order: 2 },
-        { name: 'Uginanie hantli', targetSets: 3, targetReps: '10-12', order: 3 },
-        { name: 'Uginanie młotek', targetSets: 3, targetReps: '10-12', order: 4 },
+        { name: 'Podciągania szerokie', targetSets: 4, targetReps: 'max', order: 0 },
+        { name: 'Podciągania wąskie (supinacja)', targetSets: 3, targetReps: 'max', order: 1 },
+        { name: 'Australijskie podciągania', targetSets: 3, targetReps: '10-15', order: 2 },
+        { name: 'Face pull (gumka)', targetSets: 3, targetReps: '15-20', order: 3 },
+        { name: 'Zawiśnięcie — zwis aktywny', targetSets: 3, targetReps: '30-60s', order: 4 },
       ],
     },
     {
       dayOfWeek: 3,
-      name: 'Nogi',
+      name: 'Nogi — Maszyny',
       exercises: [
-        { name: 'Przysiady', targetSets: 4, targetReps: '6-10', order: 0 },
-        { name: 'Leg press', targetSets: 3, targetReps: '10-12', order: 1 },
-        { name: 'Wypady', targetSets: 3, targetReps: '10 każda', order: 2 },
-        { name: 'Prostowanie nóg', targetSets: 3, targetReps: '12-15', order: 3 },
-        { name: 'Łydki stojąc', targetSets: 4, targetReps: '15-20', order: 4 },
+        { name: 'Leg Press', targetSets: 4, targetReps: '12-15', order: 0 },
+        { name: 'Prostowanie nóg (maszyna)', targetSets: 3, targetReps: '12-15', order: 1 },
+        { name: 'Zginanie nóg (maszyna)', targetSets: 3, targetReps: '12-15', order: 2 },
+        { name: 'Łydki na maszynie', targetSets: 4, targetReps: '15-20', order: 3 },
+        { name: 'Przysiady bułgarskie', targetSets: 3, targetReps: '10 każda', order: 4 },
       ],
     },
     {
       dayOfWeek: 4,
-      name: 'Cardio / Aktywny odpoczynek',
+      name: 'Core + Mobilność',
       exercises: [
-        { name: 'Rower 30 min', targetSets: 1, targetReps: '30 min', order: 0 },
-        { name: 'Rozciąganie', targetSets: 1, targetReps: '15 min', order: 1 },
+        { name: 'Plank', targetSets: 3, targetReps: '60s', order: 0 },
+        { name: 'Hollow Body Hold', targetSets: 3, targetReps: '30s', order: 1 },
+        { name: 'Wznosy nóg w zwisie', targetSets: 3, targetReps: '10-12', order: 2 },
+        { name: 'Deska boczna', targetSets: 3, targetReps: '30s każda', order: 3 },
+        { name: 'Rozciąganie / Mobilność', targetSets: 1, targetReps: '15 min', order: 4 },
       ],
     },
     {
       dayOfWeek: 5,
-      name: 'Barki + Ramiona',
+      name: 'Push — Zaawansowany',
       exercises: [
-        { name: 'Wyciskanie żołnierskie', targetSets: 4, targetReps: '6-10', order: 0 },
-        { name: 'Unoszenie bokiem', targetSets: 3, targetReps: '12-15', order: 1 },
-        { name: 'Arnoldki', targetSets: 3, targetReps: '10-12', order: 2 },
-        { name: 'Face pull', targetSets: 3, targetReps: '15-20', order: 3 },
+        { name: 'Pompki z nogami wyżej', targetSets: 4, targetReps: '8-12', order: 0 },
+        { name: 'Dipy (drążek)', targetSets: 4, targetReps: 'max', order: 1 },
+        { name: 'Pike Push-up (progresja)', targetSets: 3, targetReps: '8-10', order: 2 },
+        { name: 'Pompki z klaśnięciem', targetSets: 3, targetReps: '5-8', order: 3 },
+        { name: 'Planche Lean (izometria)', targetSets: 3, targetReps: '20-30s', order: 4 },
       ],
     },
     {
       dayOfWeek: 6,
-      name: 'Full Body / Siłowy',
+      name: 'Full Body Kalistenika',
       exercises: [
-        { name: 'Przysiady', targetSets: 3, targetReps: '8-10', order: 0 },
-        { name: 'Wyciskanie', targetSets: 3, targetReps: '8-10', order: 1 },
-        { name: 'Wiosłowanie', targetSets: 3, targetReps: '8-10', order: 2 },
-        { name: 'Overhead press', targetSets: 3, targetReps: '8-10', order: 3 },
+        { name: 'Burpees', targetSets: 3, targetReps: '10', order: 0 },
+        { name: 'Podciągania szerokie', targetSets: 3, targetReps: 'max', order: 1 },
+        { name: 'Pompki szerokie', targetSets: 3, targetReps: '15', order: 2 },
+        { name: 'Jump Squats', targetSets: 3, targetReps: '15', order: 3 },
+        { name: 'Hollow Body Hold', targetSets: 3, targetReps: '30s', order: 4 },
       ],
     },
   ]
@@ -78,14 +83,12 @@ async function main() {
       data: {
         dayOfWeek: day.dayOfWeek,
         name: day.name,
-        exercises: {
-          create: day.exercises,
-        },
+        exercises: { create: day.exercises },
       },
     })
   }
 
-  console.log('Seed completed — plan treningowy dodany')
+  console.log('Seed — plan kalisteniki zapisany')
 }
 
 main()

@@ -26,8 +26,8 @@ export default function TrainingClient({ trainingPlan, recentSessions, todayDayO
   return (
     <div className="space-y-5 animate-in">
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: '#f0fdf4' }}>Trening</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(240,253,244,0.4)' }}>Plan + dziennik sesji</p>
+        <h1 className="text-2xl font-bold" style={{ color: '#f0fdf4' }}>Kalistenika</h1>
+        <p className="text-sm mt-0.5" style={{ color: 'rgba(240,253,244,0.4)' }}>Bodyweight + maszyny na nogi</p>
       </div>
 
       {/* Day selector */}
@@ -218,14 +218,11 @@ function LogSession({ day, onDone }: { day: TrainingDayFull; onDone: () => void 
           {expandedEx === ex.name && exSets.length > 0 && (
             <div className="space-y-2">
               <div className="grid grid-cols-3 gap-2 text-xs px-1" style={{ color: 'rgba(240,253,244,0.4)' }}>
-                <span>Seria</span><span>Powt.</span><span>Ciężar (kg)</span>
+                <span>Seria</span><span>Powt.</span><span>Kg / 0=BW</span>
               </div>
               {exSets.map(s => (
                 <div key={s.setNumber} className="grid grid-cols-3 gap-2 items-center">
-                  <span
-                    className="text-center text-sm font-medium"
-                    style={{ color: '#a78bfa' }}
-                  >
+                  <span className="text-center text-sm font-medium" style={{ color: '#a78bfa' }}>
                     #{s.setNumber}
                   </span>
                   <input
@@ -242,6 +239,7 @@ function LogSession({ day, onDone }: { day: TrainingDayFull; onDone: () => void 
                     className="text-center text-sm"
                     min="0"
                     step="0.5"
+                    placeholder="0"
                   />
                 </div>
               ))}
@@ -275,7 +273,7 @@ function SessionHistory({ sessions }: { sessions: SessionFull[] }) {
     return (
       <div className="card p-8 text-center space-y-2">
         <Dumbbell size={28} className="mx-auto" style={{ color: 'rgba(139,92,246,0.3)' }} />
-        <p className="text-sm" style={{ color: 'rgba(240,253,244,0.35)' }}>Brak sesji z ostatnich 7 dni</p>
+        <p className="text-sm" style={{ color: 'rgba(240,253,244,0.35)' }}>Brak zalogowanych sesji</p>
       </div>
     )
   }
