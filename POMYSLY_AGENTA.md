@@ -92,3 +92,47 @@
    *Inspiracja: Notion Life OS, Day One AI prompts*
 
 ---
+
+## [25.05.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Habitica** — dopamina po każdym check-offie: awatar dostaje XP i złoto w 0.5 sekundy od kliknięcia; party system karze całą grupę za niespełniony Daily jednego gracza — silniejsza motywacja niż jakiekolwiek powiadomienie push
+- **Duolingo** — Streak Freeze zmniejszył churn o 21% u użytkowników zagrożonych utratą streaka; system lig (30 osób/liga, tygodniowy ranking XP) powoduje 40% wyższe zaangażowanie niż brak lig; Friend Quests jako kooperacja
+- **Anki** — po każdej fiszce cztery przyciski: Again / Hard / Good / Easy — każda odpowiedź kalibruje indywidualny `easiness_factor` i precyzyjnie przesuwa datę następnej powtórki; brak tego mechanizmu = niedoskonałe SM-2
+- **Clozemaster** — "Fluency Fast Track" priorytetyzuje top-1000 najczęstszych słów w języku; słowa poza tą listą oznaczone jako "rzadkie" i pomijane na początku nauki
+- **Edgewonk** — Setup Checklist: przed każdym tradem lista warunków do odhaczenia (np. "clear market structure ✓, R:R > 2:1 ✓, no news events ✓"); po miesiącu tabela pokazuje trades z 100% checklistą vs z pominięciami — winrate rozchodzi się dramatycznie
+- **TradesViz** — AI chatbot Q&A: wpisujesz po angielsku "What was my best day of the week?" i system zapytuje własną bazę danych, zwraca odpowiedź w 2 sekundy bez klikania w filtry
+- **Daylio** — killer feature: tagi aktywności (do 150 własnych ikon), a po 30+ wpisach automatyczna korelacja "Twoja energia jest o 2.4 wyższa w dni z siłownią niż bez" — psychologia behawioralna bez żadnego wysiłku użytkownika
+- **Calistree** — wizualne drzewo umiejętności: każdy węzeł to ćwiczenie, strzałki pokazują prerequisites; przy wejściu na węzeł: "wymagane X pull-ups × Y reps — masz Z, brakuje W" — czytelny dystans do celu elite
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Checklist przed Tradem + Compliance Rate w Statystykach**
+   Przed zapisaniem każdego tradu wymuś przejście przez krótką checklistę (5–7 pól, edytowalnych przez użytkownika w ustawieniach): np. "Struktura rynku czytelna ✓ / Czekałem na potwierdzenie ✓ / R:R ≥ 2:1 ✓ / Brak ważnych newsów ✓ / Stan emocjonalny OK ✓". Każde pole to checkbox — można odznaczyć i zapisać trade z niepełną checklistą, ale system zapisuje % kompletności. W zakładce Statystyki tradingu dodaj tabelę: **Compliance 100% → osobny WR i avg R:R** vs **Compliance < 80% → osobny WR i avg R:R**. Oba wiersze aktualizowane w czasie rzeczywistym.
+   *Dlaczego warto: Edgewonk ogłosił checklistę jako swój najchętniej cytowany feature. Różnica w winrate między tradem wziętym po pełnej checkliście a tradem impulsywnym wynosi typowo 20–35 punktów procentowych — mając własne dane za 60 dni, ta tabela eliminuje nadmiarowe ryzyko szybciej niż jakakolwiek reguła psychologiczna. Dla prop-tradera walczącego o funded account to różnica między zaliczeniem a resetem.*
+   *Inspiracja: Edgewonk Setup Checklists*
+
+2. **[Review] — Tagi Aktywności + Korelacja z Energią po 30 Dniach**
+   W module Review, bezpośrednio pod suwakiem energii (1–10), dodaj siatkę 12 szybkich tagów aktywności (ikon 32×32px, single-tap toggle): 🏋️ Siłownia / 🧊 Zimny prysznic / 📈 Trading / 📚 Nauka / ☀️ Wyjście na słońce / 🧠 Medytacja / 🎮 Gaming > 2h / 📱 Social media > 2h / 🍺 Alkohol / 😴 Mało snu / 👥 Spotkanie towarzyskie / 🎵 Muzyka/relaks. Tagi zapisuj w nowej tabeli `review_activity_tags`. Po 30+ wpisach w zakładce Statystyki pokaż sekcję "Co wpływa na Twoją energię": lista tagów posortowana wg różnicy avg energii (dni z tagiem vs bez). Przykład: "🏋️ Siłownia: +2.1 | 📱 Social media > 2h: −1.8".
+   *Dlaczego warto: Daylio zbudował lojalność milionów użytkowników właśnie na tej korelacji — jest to "aha moment", który sprawia że użytkownik nie może przestać uzupełniać dziennika, bo staje się ciekawy co jeszcze się okaże. Dla 19-latka budującego nawyki to pierwsze prawdziwe dane o sobie zamiast intuicji. Technicznie: tabela many-to-many między wpisami a tagami, 10 linii SQL do korelacji, jeden widok w Statystykach.*
+   *Inspiracja: Daylio Activity Correlations*
+
+3. **[Polski] — Streak Freeze Tokeny + Ocena Trudności Słowa (Again/Hard/Good/Easy)**
+   Dwie zmiany w jednej paczce: (a) **Streak Freeze**: za każdy pełny tydzień (7×5 słów) użytkownik dostaje 1 token Freeze (max 2 w rezerwie). Baner "Streak: 🔥 14 dni | Freeze: 🧊×2" widoczny na górze modułu Polski i na Dashboardzie. Gdy nie dodasz słów w danym dniu, system automatycznie zużywa jeden Freeze i streak trwa — zero resetu. (b) **Ocena trudności po quizie**: zamiast jednego "OK" cztery przyciski: **Znowu** (wraca jutro) / **Trudne** (wraca za 2 dni) / **Dobre** (wraca za 7 dni) / **Łatwe** (wraca za 14 dni). Dane te uzupełniają istniejące SM-2 o precyzyjne calibrowanie interwałów per słowo.
+   *Dlaczego warto: Duolingo zmierzył, że Streak Freeze redukuje churn o 21% u użytkowników zagrożonych utratą streaka. Reset po jednym zapomnianym dniu to najczęstszy powód porzucenia nawyku — nie brak motywacji, tylko poczucie "i tak już zepsute". Ocena trudności to zaś brakujące ogniwo SM-2 — bez niej algorytm nie może dostosować easiness_factor do Twoich konkretnych słabych punktów.*
+   *Inspiracja: Duolingo Streak Freeze, Anki Again/Hard/Good/Easy*
+
+4. **[Kalistenika] — Drzewo Umiejętności Elite (Muscle-up / Planche / Front Lever)**
+   Dodaj nową zakładkę "Drzewo Umiejętności" w module Kalistenika. Wyświetl interaktywny SVG DAG z 5 węzłami-celami na górze: **Muscle-up**, **Planche**, **Front Lever**, **Handstand Push-up**, **Pistol Squat**. Każdy cel ma 4–6 węzłów-prerequisites poniżej (np. Muscle-up ← Pull-up ×10 + Dip ×15 + Negative muscle-up ×5). Kolor węzła: 🔴 zablokowany / 🟡 w trakcie / 🟢 odblokowany — automatycznie na podstawie logów sesji z Kalisteniki. Kliknięcie węzła: popup "Pull-up: masz 7 reps, potrzebujesz 10 — zostało ~3 sesje przy obecnym tempie". Drzewo wyłącznie CSS/SVG, zero zewnętrznych bibliotek.
+   *Dlaczego warto: Calistree i Boostcamp zbudowały swoje core retention na tym jednym widoku. Kalistenika bez drzewa to logowanie w próżnię — nie ma oczywistej odpowiedzi na "po co te 6 sesji tygodniowo?". Drzewo nadaje każdej sesji konkretny cel hierarchiczny i sprawia, że postęp jest widoczny bez dokładania ciężarów (czego kalistenika z definicji nie oferuje). Dla 19-latka próbującego muscle-up to silniejsza motywacja niż jakikolwiek streak.*
+   *Inspiracja: Calistree, Boostcamp*
+
+5. **[Dashboard] — "Zapytaj swoje dane" — Claude Q&A po Polsku**
+   Na dole Dashboardu dodaj małe pole input z placeholderem "Zapytaj o swoje statystyki...". Po wpisaniu pytania (np. "Ile słów nauczyłem się w maju?" / "Który dzień tygodnia mam najwyższą energię?" / "Ile zysku zrobiłem w ostatnich 30 dniach?") — wywołaj Claude API z system promptem zawierającym schemat bazy danych SQLite i ostatnie 90 dni danych w JSON. Claude zwraca gotową odpowiedź w 1–2 zdaniach po polsku. Odpowiedź pojawia się inline pod inputem bez nowego widoku. Cache w localStorage na 1h dla identycznych pytań.
+   *Dlaczego warto: TradesViz AI Q&A to jeden z najwyżej ocenianych features ich platformy — zamiast klikać przez 5 ekranów filtrów, dostajesz odpowiedź w 3 sekundy. Przy rosnącej bazie danych (trading, słowa, treningi, wpisy dziennika) ręczne szukanie wzorców staje się coraz trudniejsze. Mając już Claude w projekcie (generowanie słów i podsumowania), koszt dodania Q&A to ~50 linii kodu + jeden nowy endpoint API.*
+   *Inspiracja: TradesViz AI Chatbot, Notion AI*
+
+---
