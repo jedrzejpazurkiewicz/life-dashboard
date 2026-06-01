@@ -136,3 +136,47 @@
    *Inspiracja: TradesViz AI Chatbot, Notion AI*
 
 ---
+
+## [01.06.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Tradervue** — przemysłowy standard dla stock/futures traderów; wyróżniający feature to "Best Exit Analysis" z wykresem MAE/MFE (maksymalny niekorzystny vs korzystny ruch na każdym tradzie) — pokazuje dosłownie ile procent ruchu zostało zmarnowane przez zbyt wczesne wyjście
+- **Reflectly** — dziennik oparty na CBT i positive psychology; nie zbiera wolnego tekstu, tylko prowadzi przez sekwencję pytań naprowadzających po każdym wpisie — "Co konkretnie sprawiło, że czułeś X?" zamiast zostawić użytkownika z pustym polem
+- **Progression App** — kalistenika; hall of fame "Personal Records" jako osobna zakładka: każde ćwiczenie z datą pobicia rekordu, ikoną nowego PR i podświetleniem w neonowym kolorze gdy rekord zostanie pobity podczas aktualnej sesji
+- **Loop Habit Tracker** — statystyki dzienne rozbite na "najlepszą porę dnia" i "najlepszy dzień tygodnia" dla każdego nawyku — dane z całej historii, nie z ostatnich 7 dni — pozwalają dopasować nawyk do biologicznego rytmu zamiast do "po prostu rano"
+- **Clozemaster Fluency Fast Track** — priorytetyzacja słownictwa wg częstotliwości użycia: top-1000 najczęstszych słów dostają czerwoną etykietę "kluczowe", słowa poza top-5000 — szarą "rzadkie"; użytkownik widzi natychmiast czy uczy się słów przydatnych czy ciekawostek leksykalnych
+- **Notion Life OS (Areas of Life)** — cotygodniowy radar/pająk z 6 osiami życia (Zdrowie / Finanse / Nauka / Relacje / Praca / Rozrywka); każda oś to % tygodniowego celu — jeden widok zastępuje przeglądanie 6 modułów po kolei
+- **Madbarz** — wbudowany timer odpoczynku z wibrotonowaniem między setami; po sesji jedna grafika z kołem: czas aktywny vs czas odpoczynku vs czas sesji — "39% czasu pracowałeś" jako konkretna metryka intensywności
+- **Day One (Morning Pages)** — specjalny tryb "Morning Pages": wolny strumień świadomości 3 minuty po wstaniu, bez formatowania, bez promptów; funkcja "On This Day" pokazuje wpis sprzed dokładnie roku i 2 lat automatycznie na górze każdego nowego wpisu
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Wykres MAE/MFE i "% Przechwyconego Ruchu"**
+   Dla każdego zapisanego tradu przechowuj dwa dodatkowe pola: `mae_pips` (maksymalne obsunięcie zanim trade poszedł w twoją stronę) i `mfe_pips` (maksymalny ruch w twoją stronę zanim zamknąłeś). Oblicz `captured_pct = actual_gain / mfe * 100`. W statystykach dodaj scatter plot: oś X = MFE w pipsach/punktach, oś Y = ile % tego ruchu zostało zrealizowane — idealne wyjścia grupują się przy 70–90% w prawym górnym rogu. Pod wykresem jedna liczba: "Średnio kapturujesz **X%** dostępnego ruchu". Jeśli X < 50%, problem leży w zarządzaniu pozycją, nie w selekcji setupów.
+   *Dlaczego warto: Tradervue zbudował "Best Exit Analysis" jako flagship feature płatnego planu — doświadczeni traderzy twierdzą, że ten jeden widok pokazał im gdzie tracą pieniądze mimo dodatniego P&L. Dla prop-tradera na FTMO/TopStep różnica między 45% a 70% captured move to różnica między przejściem a resetem konta. Technicznie: 2 nowe pola w tabeli trades, 1 endpoint do obliczeń, 1 SVG scatter plot.*
+   *Inspiracja: Tradervue Best Exit Analysis*
+
+2. **[Kalistenika] — Hall of Fame Rekordów z Datami**
+   Dodaj zakładkę "PRy" (Personal Records) w module Kalistenika. Tabela z wierszami dla każdego ćwiczenia: **Ćwiczenie | Rekord (max reps × sets) | Data pobicia | Poprzedni rekord**. Podczas zapisywania sesji — jeśli nowy wynik bije rekord, automatycznie wyświetl baner "🏆 NOWY REKORD! Pull-up: 12 reps (poprzednio: 10, 14.03.2026)" z animacją neonowego bordera przez 3 sekundy. Na stronie głównej Kalisteniki przy każdym ćwiczeniu mała ikona 🏆 jeśli PR był bity w ciągu ostatnich 14 dni. Historia PRów dostępna w tooltipie: kliknij ćwiczenie → mini wykres liniowy rekordu w czasie.
+   *Dlaczego warto: W kalistenice nie ma talerzy do dokładania, więc rekordów nie widać gołym okiem jak na siłowni — bez dedykowanego widoku trening pull-upów przez 3 miesiące wygląda jak stagnacja, choć rekordy są bite regularnie. Progression App i Boostcamp opierają retencję użytkowników właśnie na "PR moment" — chwili gdy baner pojawia się na ekranie. To najbardziej czytelny dowód postępu siłowego dla 19-latka budującego bazę kalistenyczną.*
+   *Inspiracja: Progression App, Boostcamp*
+
+3. **[Statystyki] — Tygodniowy Radar Life Balance (6 osi)**
+   Dodaj zakładkę "Balans" z interaktywnym SVG radar chart (hexagon). 6 osi, każda 0–100%: **Kalistenika** (sesje w tygodniu / 6), **Polski** (słowa dodane / 35), **Trading** (sesje zalogowane / 5), **Zadania** (ukończone HIGH/MEDIUM / zaplanowane), **Dziennik** (wieczorne wpisy / 7), **Energia** (avg z wpisów / 10, skalowane do 100%). Wypełniony hexagon = idealny tydzień. Zaciemniona partia = zaniedbany obszar. Hover na wierzchołku: tooltip ze szczegółami. Pod radarem auto-generowany tekst: "Ten tydzień: mocne — Trading i Kalistenika. Wymaga uwagi — Polski (43%)."
+   *Dlaczego warto: Notion Life OS templates stały się popularne dokładnie przez ten widok — ludzie orientują się, że maksymalizują jeden obszar życia kosztem innych. Przy 6 modułach sprawdzanie każdego osobno zajmuje 3 minuty; radar daje odpowiedź "co zaniedbałem?" w 2 sekundy. Neonowy hexagon na ciemnym tle #080F0A to też jeden z najlepiej wyglądających elementów UI dla dark glassmorphism — zero zewnętrznych bibliotek, czyste SVG.*
+   *Inspiracja: Notion Life OS Areas of Life, Obsidian Life OS template*
+
+4. **[Dashboard] — "Poranny Briefing" — Karta Dnia na Starcie**
+   Przy pierwszym otwarciu Dashboardu każdego dnia przed godziną 12:00 wyświetl collapsible card na samej górze, nad sekcją nawyków. Karta zawiera 4 linijki: 🏋️ **Trening dziś**: [typ sesji z 6-dniowego planu, np. "Pull — plecy/biceps"] | 📚 **Słowa do dodania**: [X/5 lub "Cel spełniony ✅"] | 📋 **Zadania HIGH na dziś**: [1–3 zadania HIGH priority z modułu Zadania] | 🔋 **Wczorajsza energia**: [X/10 z wieczornego wpisu]. Karta chowa się po kliknięciu lub po 15 minutach. Nie generuje się po południu — tylko przy porannym otwarciu.
+   *Dlaczego warto: Notion Life OS i każdy poważny system produktywności startuje od "morning briefing" integrującego wszystkie obszary przed pierwszym działaniem. Teraz żeby wiedzieć co masz na dziś, musisz wejść do 4 różnych modułów — ta karta eliminuje tę potrzebę w 5 sekund. Technicznie: 4 proste query do istniejących tabel + localStorage z datą ostatniego wyświetlenia. Koszt implementacji to może 2 godziny.*
+   *Inspiracja: Notion Life OS Morning Dashboard, Day One Morning Pages*
+
+5. **[Review] — Pytanie Naprowadzające Claude'a po Zapisaniu Wpisu**
+   Po kliknięciu "Zapisz" w module Review i wygenerowaniu AI summary — jeśli pole "Co poprawić" ma mniej niż 40 znaków lub zawiera słowa-wytrychy ("nic", "ok", "dobrze", "normalnie", "trochę") — Claude automatycznie wysyła jedno krótkie pytanie naprowadzające wyświetlane jako małe pole pod podsumowaniem: np. "Wymieniasz _[tekst z pola]_ — co **konkretnie** możesz zrobić jutro żeby to zmienić? Jedna rzecz, możliwa do wykonania." Użytkownik może odpowiedzieć (odpowiedź dołącza się do wpisu w bazie) lub kliknąć "Pomiń". Brak wieloturowej konwersacji — jedno pytanie, jedna opcjonalna odpowiedź.
+   *Dlaczego warto: Reflectly zbudował lojalność na tym mechanizmie — wymuszanie jednego głębokiego pytania przemienia powierzchowny wpis ("za mało spałem") w konkretny plan działania ("jutro śpię o 23:00 i wyłączam telefon o 22:30"). Obecna aplikacja zbiera AI summary, ale nie prowadzi do refleksji — wpis zostaje odczytany i zamknięty bez zmiany zachowania. Day One ma analogiczny feature "Go Deeper" który jest najwyżej oceniany przez użytkowników. Technicznie: detekcja krótkiego/generycznego tekstu + jedno dodatkowe wywołanie Claude API (< 100 tokenów prompt).*
+   *Inspiracja: Reflectly CBT Prompts, Day One "Go Deeper" AI*
+
+---
