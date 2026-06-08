@@ -180,3 +180,47 @@
    *Inspiracja: Reflectly CBT Prompts, Day One "Go Deeper" AI*
 
 ---
+
+## [08.06.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **TradesViz** — nowa funkcja Prop Firm Compliance Center (2026): osobny panel dla FTMO/TopStep/Apex z aktualnym drawdownem vs limitem, alertem gdy przekroczysz 80% dziennej straty i prognozą "pozostało X dni do końca wyzwania" — eliminuje ręczne monitorowanie reguł w osobnym arkuszu
+- **Loop Habit Tracker** — analiza "Kiedy robisz nawyki": heatmapa % completion per dzień tygodnia z całej historii (nie z ostatnich 7 dni); wyraźnie widać że piątki i niedziele to statystyczne dołki dla większości nawyków — informacja do optymalizacji planu, nie powód do wyrzutów sumienia
+- **Day One** — "On This Day": przy otwieraniu dziennika automatycznie pojawia się wpis z dokładnie rok temu i 2 lata temu — jeden z najwyżej ocenianych feature'ów w recenzjach App Store 2025, bo wywołuje refleksję longitudinalną bez żadnego wysiłku użytkownika
+- **Babbel** — nauka oparta na poziomach CEFR (A1/A2/B1/B2): każde słowo i każda lekcja są tagowane poziomem, użytkownik widzi "Osiągnięto poziom A2" jako konkretny milestone zamiast abstrakcyjnej liczby słów; psychologicznie silniejszy punkt kontrolny niż surowy licznik
+- **Streaks** (iOS) — "All-time best" wyświetlony tuż obok "Current streak" z mini-wykresem poprzednich streaków (np. "Twoje rekordy: 47d, 31d, 28d — obecny: 12d"); historyczny kontekst motywuje inaczej niż sam licznik, bo pokazuje że jesteś zdolny do dłuższych serii
+- **Clozemaster Radio** — tryb pasywnej nauki: zdania w języku docelowym czytane głosem, po 3 sekundach tłumaczenie, hands-free; 15 minut "radia" podczas biegania lub spaceru = ok. 50 zdań kontekstowych bez patrzenia w ekran — dociera do grupy użytkowników której flashcardy nie wciągają
+- **Reflectly** — widok "Emotional Patterns": po 30+ wpisach aplikacja pokazuje wykresy nastrojów według dnia tygodnia i godziny dnia — "Twoja piątkowa energia jest o 1.8 wyższa niż środowa" bez żadnej dodatkowej akcji ze strony użytkownika; korelacje które sam byś nie zobaczył
+- **Finch** — aplikacja wraca łagodnie po przerwie: brak powiadomień "zawiodłeś", zamiast tego ptak jest smutny ale wita cię bez kary po powrocie — kluczowa różnica psychologiczna dla użytkowników z anxiety przed "zniszczonym" streakiem
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Panel "Firma Prop na Żywo" z Paskiem Compliance i Alertami**
+   W Trading Journal dodaj collapsible sekcję "Firma Prop" konfigurowaną jednorazowo: użytkownik wybiera firmę z listy (FTMO / TopStep / Apex / Własne reguły) i wpisuje: wielkość konta, max dzienna strata w USD, max drawdown całkowity. System automatycznie sumuje dzisiejsze trade'y i pokazuje: pasek od 0% do 100% wypełnienia dziennego limitu straty (zielony 0–60%, żółty 60–85%, czerwony 85–100% z animacją pulsowania), jedną linijkę "Dziś: −$187 z $500 limitu (37.4%)" i drugą "Drawdown: −$1.240 z $3.000 max (41.3%)". Dane resetują się o północy automatycznie. Gdy dzisiejszy P&L przekroczy 90% limitu — wyświetl modal: "⚠️ Zbliżasz się do limitu dziennej straty FTMO. Pozostało $50. Czy na pewno chcesz otworzyć nowy trade?" z przyciskami Kontynuuj / Zatrzymaj sesję.
+   *Dlaczego warto: TradesViz wprowadził Prop Firm Compliance Center w 2026 jako jeden z najszybciej adoptowanych feature'ów — prop-traderzy tracą funded account przez naruszenie reguł w emocjonalnym momencie, nie przez złą strategię. Masz już moduł śledzenia firm prop, ale brak live compliance powoduje że ryzyko musisz monitorować w głowie podczas każdego trade'u — to generuje dodatkowy stres i błędy kognitywne dokładnie wtedy gdy najmniej możesz sobie na nie pozwolić. Technicznie: jedno pole konfiguracyjne w LocalStorage + jeden SUM query z filtrów po dacie.*
+   *Inspiracja: TradesViz Prop Firm Compliance Center*
+
+2. **[Review] — "Tego Dnia w Zeszłym Roku" — Automatyczna Karta Retrospekcyjna**
+   Na początku strony Review, przed polami do wypełnienia, wykonaj SELECT do bazy szukający wpisów z datą ±1 dzień od (today − 365 dni). Jeśli wpis istnieje — wyświetl collapsed card z nagłówkiem "📅 Rok temu (8 czerwca 2025):" + pierwszych 80 znaków z pola "co poszło dobrze" + ocena energii "🔋 7/10". Kliknięcie rozwiją pełny wpis w trybie tylko do odczytu. Karta chowa się automatycznie po 90 sekundach lub gdy użytkownik kliknie pierwsze pole formularza. Brak wpisu sprzed roku = brak karty, bez żadnych komunikatów zastępczych ani pustych placeholderów.
+   *Dlaczego warto: Day One "On This Day" jest najwyżej ocenianą funkcją aplikacji według recenzji App Store — użytkownicy opisują ją jako "główny powód dla którego piszę codziennie". Konfrontacja z własnym tekstem sprzed roku ujawnia wzrost i regresje bez żadnej analizy — działa silniej niż jakikolwiek wykres progresji. Dla kogoś w wieku 19 lat budującego się od zera: za rok ta karta pokaże konkretną różnicę między dwiema wersjami siebie w jednym widoku. Technicznie: jeden dodatkowy SQL query przy ładowaniu strony Review, zero nowych tabel, ~15 linii kodu.*
+   *Inspiracja: Day One "On This Day"*
+
+3. **[Polski] — Tagi Poziomów CEFR (A1/A2/B1/B2) dla Słów + Progress Bar przez Poziomy**
+   Rozszerz prompt Claude'a generującego nowe słowa o jedno pole: `"cefr_level": "A2"`. Dodaj kolumnę `cefr_level` do tabeli słów w Prisma — migracja jednolinijkowa. Na stronie Polski zastąp jedną dużą liczbę "Nauczyłeś się 127 słów" czterema kolorowymi chipami: 🟢 A1: 43 | 🔵 A2: 61 | 🟡 B1: 18 | 🔴 B2: 5. Nad chipami dodaj pasek postępu: "Droga do B1: opanuj 100 słów A2 — masz 61, brakuje 39 (61%)". W quizie słowa A1/A2 dostają wyższy priorytet od SM-2 niż B1/B2 — uczeń najpierw solidnie zapamiętuje fundament. Na Dashboardzie badge zmień z "5/5 słów" na "A2: 61% opanowane". Mastered toggle przy słowie automatycznie zalicza je do poziomu i aktualizuje pasek.
+   *Dlaczego warto: Babbel i Duolingo oparły cały system motywacji na CEFR — bo "nauczyłem się 200 słów" nie mówi nic o tym czy jesteś gotowy rozmawiać. Obecnie cel "5 nowych słów dziennie" może generować losowy mix A1 i C1 bez żadnej logiki — uczysz się słowa "abstrakcja" zanim solidnie znasz "dom". Milestone "Osiągnąłem A2" jest kilkanaście razy bardziej motywujący niż "mam 143 słowa w bazie" bo ma znaczenie w realnym świecie. Claude generuje słowa i tak — dodanie jednego pola do promptu kosztuje dosłownie 0 dodatkowych tokenów.*
+   *Inspiracja: Babbel CEFR progression, Duolingo level milestones*
+
+4. **[Statystyki] — "Twój Optymalny Dzień Tygodnia" per Nawyk — 7 Mini-Słupków**
+   W zakładce Statystyki, pod obecną siatką 7-dniową, dodaj sekcję "Wzorce tygodniowe". Dla każdego z 3 nawyków (sport / journaling / tiktok<30min) oblicz % completion per dzień tygodnia z CAŁEJ historii danych, nie z ostatnich 7 dni — query: `SELECT strftime('%w', date) as dow, AVG(CASE WHEN completed THEN 1.0 ELSE 0.0 END) FROM habits GROUP BY dow`. Wyświetl jako 7 pionowych mini-słupków (Pn–Nd) wypełnionych neonową zielenią proporcjonalnie do procentu — słupek 91% jest prawie pełny, 48% do połowy. Pod każdym nawykiem dwie linijki tekstu: "✅ Najlepsze: wt, śr (89%)" i "⚠️ Najtrudniejsze: pt, nd (54%)". Cała sekcja: ~20 linii SQL + 7 div-elementów Tailwind — zero zewnętrznych bibliotek.
+   *Dlaczego warto: Loop Habit Tracker oferuje tę analizę od lat i jest to jeden z najczęściej cytowanych feature'ów przez zaawansowanych użytkowników. Wielu ludzi ma nawyk który "nie działa" w piątek — nie z braku motywacji, ale bo piątek to biologicznie inny dzień. Mając te dane możesz świadomie zaplanować "piątkową wersję" nawyku (krótszą, lżejszą) albo zaakceptować ~60% compliance i nie traktować tego jako porażki. Bez tej analizy nie wiadomo nawet gdzie jest systemowy problem, a streak wygląda jak przypadkowy ciąg sukcesów i porażek.*
+   *Inspiracja: Loop Habit Tracker day-of-week analysis*
+
+5. **[Kalistenika] — Automatyczny Timer Odpoczynku Między Setami + Wskaźnik Intensywności Sesji**
+   W widoku logowania sesji, po kliknięciu "Zapisz set", automatycznie uruchom stoper widoczny na górze ekranu odliczający czas od momentu zapisu. Kolor tła stopera zmienia się co 30 sekund: 0–60s czerwony (za krótki odpoczynek), 60–120s zielony (optymalny), 120s+ żółty (długi). Przycisk "Dodaj następny set" jest widoczny przez cały czas — timer to podpowiedź, nie blokada. Na górze sesji wyświetl pasek zbiorczy: "Sesja: 14 min aktywnych | 21 min odpoczynku". Po zakończeniu sesji ("Zakończ sesję") podsumowanie zawiera jeden nowy wskaźnik: "Intensywność: 40% (czas ćwiczenia / czas łączny)" z krótkim benchmarkiem: <30% = luźny / 30–50% = umiarkowany / 50%+ = intensywny.
+   *Dlaczego warto: Bez timera czas odpoczynku jest przypadkowy — często 5 minut zamiast 90 sekund, co niszczy adaptację mięśniową i sprawia że sesja trwa 90 minut zamiast 45. Madbarz i Boostcamp mają timer od lat jako jeden z podstawowych feature'ów — brak go w Kalistenice jest zauważalny już po pierwszej sesji i skutkuje prowadzeniem treningów z aplikacją Stoper otwartą obok. Wskaźnik intensywności po sesji daje obiektywne porównanie "ten trening był cięższy od poprzedniego" bez subiektywnej oceny RPE — prosta liczba zastępuje 5 minut refleksji. Technicznie: localStorage przechowuje `setLoggedAt` timestamp, stoper to setInterval w React, intensywność to jedno dzielenie przy zapisie sesji.*
+   *Inspiracja: Madbarz rest timer + active/rest session analytics*
+
+---
