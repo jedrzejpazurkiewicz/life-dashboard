@@ -224,3 +224,47 @@
    *Inspiracja: Madbarz rest timer + active/rest session analytics*
 
 ---
+
+## [15.06.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Habitica** — drużynowe questy: gdy jeden gracz nie zrealizuje Daily, cały party traci HP — silniejsza motywacja niż jakiekolwiek powiadomienie push; awatar z RPG leveling system; pixel art estetyka odpycha dorosłych po kilku tygodniach i to jest największa słabość
+- **Duolingo** — tygodniowe ligi XP (30 osób, live-ranking) powodują 15% więcej ukończonych lekcji; speakingowe ćwiczenia z postaciami gamifikowane XP goals za dłuższe odpowiedzi; brak głębi retencji — dobry na nawyk, słaby na zapamiętywanie
+- **Edgewonk** — "Alternative Strategy Testing": symuluje co byś zarobił stosując INNE zasady wyjścia (np. TP 3R zamiast 2R, trailing stop) na twoich historycznych tradach — wynik w USD i WR%; "Mentor Mode": link tylko do odczytu dziennika dla coacha; ciemny interfejs, $197/rok
+- **TradesViz** — Seasonality Screener (2026): heatmapa wyników miesięcznych dla tysięcy instrumentów; widać od razu że Nasdaq historycznie ma najgorszy sierpień i najlepszy styczeń; 600+ widgetów drag-and-drop; AI chatbot Q&A na własnych danych
+- **Anki (FSRS-6)** — panel statystyk po każdej sesji: retention rate %, review streak, average daily reviews, lista najtrudniejszych kart; FSRS-6 wyszedł w 2025, trenowany na 700 mln recenzji od 20 tys. użytkowników
+- **Daylio** — logowanie nastroju wielokrotnie w ciągu dnia (nie tylko raz wieczorem); po 90+ wpisach korelacja godziny z energią automatyczna — "twoje południe jest o 1.4 wyższe niż poranek"; custom nastroje z własnym kolorem i emoji
+- **Simple Calisthenics / Progression App** — treningi podzielone na fazy: Adaptacja (2 tyg) → Hipertrofia (3 tyg) → Siła (2 tyg) → Deload (1 tydz); aplikacja sugeruje zakresy powtórzeń dla aktualnej fazy — bez tego użytkownik wchodzi w stagnację po 2 miesiącach
+- **Day One** — "Morning Pages": jeden textarea, 3-minutowy countdown, strumień świadomości bez struktury zaraz po przebudzeniu; przechowywany osobno od wieczornych wpisów; "On This Day" pojawia się automatycznie jako karta na górze — najwyżej oceniany feature wg recenzji App Store
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Symulator "Co Gdyby?" — Testuj Inne Zasady Wyjścia na Swoich Danych**
+   W zakładce Statystyki tradingu dodaj sekcję "Symulator wyjść". Dwa suwaki: "Alternatywny TP (+/- X pipsów od entry)" i "Trailing Stop (Y pipsów za szczytem)". Po ustawieniu parametrów system przelicza WSZYSTKIE historyczne trade'y z tych zasad i natychmiast pokazuje: łączna zmiana P&L w USD, nowy WR%, nowe avg R:R. Przykładowy wynik: "Gdybyś zamknął każdy trade 20 pipsów wcześniej: +$1.840 do P&L, WR wzrósłby z 54% do 61%". Wynik aktualizuje się w czasie rzeczywistym przy ruchu suwaka — zero dodatkowych API, wszystkie dane lokalne.
+   *Dlaczego warto: Edgewonk Alternative Strategy Testing to jeden z ich najmniej kopiowanych a najwyżej cenionych feature'ów — bo wymaga danych w ustrukturyzowanej formie którą tylko dedykowany dziennik posiada. Dla prop-tradera pytanie "czy mam dobry setup ale złe wyjście?" może pozostawać bez odpowiedzi przez rok; 2 minuty w symulatorze na własnych 60 trade'ach daje konkretną liczbę. Technicznie: wszystkie pola (entry, SL, TP, actual P&L) już są w bazie; symulacja to jedno przeliczenie w JS na istniejącym zbiorze — zero nowych tabel, zero nowych API calls.*
+   *Inspiracja: Edgewonk Alternative Strategy Testing*
+
+2. **[Kalistenika] — Automatyczna Periodyzacja 8-Tygodniowa z Banerem Aktualnej Fazy**
+   W ustawieniach Kalisteniki dodaj datę startu cyklu. Definiuj fazy w kodzie: Tyg 1–3 "Baza" (3×12–15 reps), Tyg 4–6 "Siła" (4×5–8 reps, wolne tempo 3-0-1), Tyg 7 "Peak" (3×max reps), Tyg 8 "Deload" (2×10 w 60% intensywności). Na górze strony Kalisteniki stały baner: "Tydzień 5/8 — Faza Siły 💪 Cel: 4×5–8 reps". Przy logowaniu sesji: zielona ramka wokół wartości w prawidłowym zakresie dla tej fazy, czerwona jeśli za dużo lub za mało. Po 8 tygodniach automatyczny modal z podsumowaniem: "Zakończono cykl. PRy pobite: 4 ćwiczenia. Następny cykl z +1 rep jako bazą?"
+   *Dlaczego warto: Bez periodyzacji trening kalisteniczny łatwo wchodzi w stagnację — 3×12 przez 6 miesięcy bez zmiany bodźca przestaje dawać efekty, ale aplikacja nie daje żadnego sygnału że coś jest nie tak. Simple Calisthenics i Progression App opierają cały model progresji na fazach: adaptacja mięśniowa wymaga systematycznej zmiany bodźca, nie tylko "więcej powtórzeń". Dla 19-latka bez trenera to zastępuje wiedzę którą musieliby czytać godzinami w artykułach o periodyzacji — aplikacja mówi sama "idź w deload" zamiast trenować do przetrenowania.*
+   *Inspiracja: Simple Calisthenics, Progression App*
+
+3. **[Polski] — Panel Statystyk Nauki: Retention Rate + Najtrudniejsze Słowa + Sprawność Tygodniowa**
+   Dodaj zakładkę "Statystyki" w module Polski. Cztery bloki: (a) **Retention Rate** — wielka neonowa cyfra "78%" obliczona jako % poprawnych odpowiedzi z ostatnich 30 dni quiz-sesji; (b) **Mini-sparkline 30 dni** — słupki z liczbą powtórzonych słów dziennie, szare gdzie brak sesji; (c) **Najtrudniejsze 5 słów** — lista słów z najwyższą liczbą błędnych odpowiedzi + przycisk "Przejdź do quizu tylko z nimi"; (d) **Sprawność tygodniowa** — "5/7 dni z quizem ten tydzień" jako pasek postępu. Brak tych metryk = nauka w ciemno.
+   *Dlaczego warto: Anki Stats page to jeden z powodów dla których zaawansowani użytkownicy nie migrują do prostszych narzędzi — liczby mówią czy algorytm faktycznie działa. Obecny moduł Polski zbiera dane do SM-2 ale nie prezentuje żadnych metryk skuteczności: można codziennie klikać quiz i nigdy nie wiedzieć że retention rate wynosi 42% (cała nauka zmarnowana). "Najtrudniejsze słowa" eliminują losowość sesji powtórkowej — klikasz przycisk i ćwiczysz dokładnie te słowa które wymagają pracy. Technicznie: dwa proste query do tabeli quiz_results, jeden komponent React.*
+   *Inspiracja: Anki Statistics Page*
+
+4. **[Dashboard] — Historia Streaków: Rekordy + Mini-Wykres Przeszłych Serii**
+   Bezpośrednio pod obecnym wskaźnikiem "🔥 12-day streak" dla każdego nawyku dodaj drugą linię: "Rekordy: 47d · 31d · 28d" (3 najdłuższe zakończone serie) oraz mini-wykres SVG (80×20px) z pionowymi słupkami proporcjonalnymi do długości — chronologicznie, aktualny streak jako pulsujący słupek po prawej. Kliknięcie w mini-wykres otwiera modal z pełną historią streaków (data start, data koniec, długość w dniach).
+   *Dlaczego warto: Streaks (iOS) pokazuje tę informację jako standard i jest jednym z najczęściej chwalonych designów w kategorii habit trackers. Psychologicznie kluczowe: kiedy po przerwaniu 3-dniowego streaka widzisz że historycznie robiłeś 47 dni — to dowód zdolności, nie klęska; czyni też obecną serię 12-dniową zrozumiałą w kontekście czy to dobra passa czy słaba. Bez historii jeden zły tydzień może wyglądać jak brak możliwości mimo że dane mówią coś innego. Technicznie: query po tabeli habits z algorytmem obliczania streaków (max 25 linii SQL), wynik cachowany na czas sesji.*
+   *Inspiracja: Streaks App (iOS) — All-Time Best Streak Display*
+
+5. **[Review] — Tryb Poranny: 3 Minuty Strumienia Świadomości przed Południem**
+   Dodaj na stronie Review drugi formularz wejścia zależny od pory dnia: "Poranek" widoczny 5:00–11:59, "Wieczór" widoczny 17:00–23:59. Tryb Poranek = jeden duży textarea z placeholderem "Napisz przez 3 minuty — cokolwiek. Bez struktury, bez oceniania." + countdown timer 3:00 który startuje przy pierwszym keystroke. Zero pól strukturalnych, zero AI summary. Jeden przycisk "Zapisz". Wpis trafia do bazy z `entry_type = 'morning'`, widoczny w archiwum jako inaczej oznaczony kafelek. Filtrowanie archiwum po typie: Wszystkie / Poranki / Wieczory.
+   *Dlaczego warto: Day One "Morning Pages" jest opisywany przez użytkowników jako feature który "zmienił ich poranek" — 3 minuty strumienia świadomości bez oceny czyści głowę przed planowaniem dnia skuteczniej niż lista zadań. Obecna aplikacja ma wyłącznie wieczorny dziennik — jeśli rano pojawi się ważna myśl, lęk przed czymś albo plan który trzeba uchwycić, nie ma gdzie tego zapisać w kontekście self-improvement. Technicznie: nowa kolumna `entry_type ENUM('morning', 'evening')` w tabeli Review, warunkowy routing po godzinie, jeden formularz bez wywoływania Claude API — minimalna zmiana schematu, maksymalny efekt użytkowy.*
+   *Inspiracja: Day One Morning Pages*
+
+---
