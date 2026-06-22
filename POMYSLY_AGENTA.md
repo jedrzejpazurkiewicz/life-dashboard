@@ -268,3 +268,47 @@
    *Inspiracja: Day One Morning Pages*
 
 ---
+
+## [22.06.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Habitica** — party quests gdzie porażka jednego gracza zadaje obrażenia całej drużynie; awatar RPG leveluje w 0.5s po każdym check-offie; pixel-art estetyka zniechęca dorosłych po kilku tygodniach, ale mechanizm natychmiastowej nagrody dopaminowej to najlepiej przebadany pattern w hab-tech
+- **Duolingo** — tygodniowe ligi XP (30 osób, live-ranking); wbudowane ćwiczenia speaking z gamifikowanymi XP goals; silny nawyk, słaba retencja długoterminowa; przyciski Again/Hard/Good/Easy w wersji premium Practice Hub
+- **Anki (FSRS-6)** — panel statystyk po każdej sesji: retention rate %, najtrudniejsze karty, average daily reviews; FSRS-6 trenowany na 700 mln recenzji, redukuje liczbę powtórek o 20–30% vs SM-2
+- **Clozemaster** — "Fluency Fast Track" priorytetyzuje top-1000 najczęstszych słów; tryb Radio: zdania czytane głosem, tłumaczenie po 3 sekundach — pasywna nauka hands-free; pogrupowanie słów wg częstotliwości użycia (top-1000 / top-5000 / rzadkie)
+- **Edgewonk** — "Alternative Strategy Testing" symuluje wynik alternatywnych zasad wyjścia na historycznych tradach; analiza wyników wg godziny dnia i dnia tygodnia; Tiltmeter jako wizualny wskaźnik stanu emocjonalnego
+- **TradesViz** — Seasonality Screener 2026: heatmapa wyników tygodniowo-miesięcznych per instrument; AI chatbot Q&A na własnych danych; 600+ widgetów drag-and-drop
+- **Daylio** — logowanie nastroju wielokrotnie w ciągu dnia; automatyczna korelacja aktywności z energią po 30+ wpisach bez dodatkowego wysiłku użytkownika; custom nastroje z własnym emoji i kolorem
+- **Simple Calisthenics / Progression App** — zdefiniowane fazy cyklu (Adaptacja → Hipertrofia → Siła → Deload); aplikacja sugeruje zakres powtórzeń dla aktualnej fazy i automatycznie sygnalizuje przejście między fazami
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Heatmapa Wyników wg Godziny i Dnia Tygodnia**
+   W zakładce Statystyki tradingu dodaj widok "Kiedy handluję najlepiej?". Wyświetl siatkę: kolumny = Pn–Pt, wiersze = godziny (np. 09:00–22:00 co godzinę). Kolor każdej komórki = winrate w tej godzinie+dzień (zielony ≥60%, żółty 40–59%, czerwony <40%, szary = brak danych). Query: `SELECT strftime('%H', opened_at) as hour, strftime('%w', opened_at) as dow, AVG(CASE WHEN pnl > 0 THEN 1.0 ELSE 0.0 END) as wr FROM trades GROUP BY hour, dow`. Pod heatmapą dwie linijki podsumowania: "✅ Twoja najlepsza pora: wtorek 14:00–16:00 (71% WR)" i "⚠️ Unikaj: piątek po 18:00 (23% WR, 6 tradów)". Całość: ~25 linii SQL + CSS Grid bez zewnętrznych bibliotek.
+   *Dlaczego warto: Edgewonk i TradesViz mają tę analizę jako jeden z najchętniej używanych widoków — doświadczeni traderzy twierdzą, że odkrycie "moje poniedziałkowe trade'y mają WR 28%" eliminuje jedną klasę błędów bez żadnej zmiany strategii. Dla prop-tradera na FTMO handlowanie w złej porze dnia może być różnicą między zaliczeniem a resetem. Żaden poprzedni raport nie zaproponował tej analizy dla Trading Journal — dane z entry timestamp już są w bazie, koszt implementacji to dosłownie 30 linii kodu.*
+   *Inspiracja: Edgewonk time-of-day analytics, TradesViz Seasonality Screener*
+
+2. **[Dashboard] — Automatyczne Korelacje Cross-Modułowe: "Co napędza Twoją wydajność?"**
+   Raz w tygodniu (niedziela 23:00) uruchom w tle query obliczające korelacje między modułami za ostatnie 90 dni i zapisz wyniki do tabeli `cross_correlations`. Trzy konkretne obliczenia: (a) avg `energy_rating` z Review w dniach z zalogowaną sesją kalisteniku vs bez; (b) winrate tradingowy w dniach po treningu vs bez; (c) liczba słów quizowanych w dniach z `energy_rating ≥ 7` vs ≤ 4. Na Dashboardzie, poniżej siatki nawyków, stały collapsible card "📊 Twoje wzorce (ostatnie 90 dni)" z max 3 automatycznie generowanymi zdaniami: "🏋️ W dni po treningu Twoja energia jest wyższa o **+2.1 pkt** (7.8 vs 5.7) | 📈 Winrate po treningu: **61%** vs 47% bez treningu | 📚 Uczysz się **2.3× więcej słów** gdy energia ≥ 7". Card odświeża się co tydzień.
+   *Dlaczego warto: Daylio zbudował lojalność milionów na autokorelacjach — ale tylko między nastrój a aktywności z ręcznych tagów. Life Dashboard ma PEŁNE dane z 6 modułów i może robić korelacje których żadna aplikacja na rynku nie oferuje (trading ↔ trening ↔ energia ↔ nauka). To jest realny "second brain" — widok który mówi ci czy Twoja ranna rutyna robi cokolwiek mierzalnego. Technicznie: 3 SQL query z AVG + GROUP BY, wyniki w osobnej tabeli, jeden komponent React — zero zewnętrznych bibliotek, zero API calls.*
+   *Inspiracja: Daylio Activity Correlations, Notion Life OS "Areas" cross-reference*
+
+3. **[Życie Calendar] — Klikalne Komórki z Mini-Profilem Dnia**
+   W obecnym kalendarzu życia (siatka od 30.08.2006 do 30.08.2056) załaduj przy inicializacji dane ze wszystkich modułów dla dni z istniejącymi rekordami (JOIN po dacie). Każda komórka z danymi zmienia kolor na jaśniejszy neonowy gradient zamiast jednorodnej szarości. Kliknięcie w komórkę otwiera slide-in panel (nie modal, żeby nie zasłaniać siatki) z mini-profilem dnia: 🔋 Energia: 7/10 | 🏋️ Trening: Pull | 📚 Słowa: +5 | 📈 Trading: +$230 | 📝 pierwsze 60 znaków z Review. Dni bez danych pokazują tylko datę. Siatka przyszłości pozostaje szara i nieinteraktywna.
+   *Dlaczego warto: Obecny Life Calendar to piękny ale martwy widok — nikt nie wraca do niego po pierwszym "wow". Dodanie danych przekształca go w najpiękniejszą nawigację po własnej historii: zamiast scrollować archiwum Review, klikasz w siatce i widzisz pełny dzień. Żadna aplikacja na rynku nie oferuje tej kombinacji — wizualnego grid lat-życia z live danymi per dzień. Technicznie: JOIN po `date::DATE` między tabelami Review, TrainingSession, VocabWords, Trade — jeden denormalizowany query przy ładowaniu strony, wyniki cachowane w localStorage per tydzień.*
+   *Inspiracja: Daylio "Year in Pixels", Day One "On This Day", Notion daily notes*
+
+4. **[Dashboard] — Tygodniowy Wynik Punktowy 0–100 z Literową Oceną**
+   Oblicz każdej niedzieli (lub na żądanie kliknięciem) jedną liczbę agregującą cały tydzień: **Habits** 30pkt (3 nawyki × 7 dni proporcjonalnie), **Kalistenika** 20pkt (sesje/6), **Polski** 20pkt (słowa/35), **Review** 15pkt (wpisy/7), **Trading zalogowany** 15pkt (min. 1 sesja lub trade). Suma 0–100 przeliczona na ocenę: 90–100 = A+, 80–89 = A, 70–79 = B, 60–69 = C, <60 = D. W prawym górnym rogu Dashboardu stały widget: duża neonowa cyfra "83" z literą "A" obok. Pod liczbą: "vs zeszły tydzień: +7 pkt 📈". Historia wyników tygodniowych zapisywana do tabeli `weekly_scores`, widoczna w Statystykach jako wykres liniowy z zaznaczonymi minimum i maximum.
+   *Dlaczego warto: Żaden z poprzednich raportów nie zaproponował agregacji tygodniowej do jednej liczby — a to jest dokładnie to co Habitica robi z level-up po dobrym tygodniu i co sprawia że zaangażowanie nie gaśnie po miesiącu. Dla osoby żonglującej 6 modułami jednocześnie, single metric zastępuje oglądanie 6 osobnych progress barów. Porównanie "week-over-week" jest też silniejszym motywatorem niż streak bo nie zeruje się po złym dniu — widać trend w górę mimo jednej słabej sesji. Technicznie: 6 query do istniejących tabel, jeden zapis do nowej tabeli weekly_scores — < 2h implementacji.*
+   *Inspiracja: Habitica XP leveling, Loop Habit Tracker "Habit Strength %", Finch weekly progress*
+
+5. **[Polski] — Wymowa Słów przez Web Speech API (Audio w Quizie, Zero Kosztów)**
+   W trybie quiz, przy każdej fiszce, dodaj ikonę 🔊 obok słowa. Kliknięcie uruchamia `window.speechSynthesis.speak(new SpeechSynthesisUtterance(word))` z `lang='pl-PL'` — bez żadnego zewnętrznego API, bez kosztów, zero latencji. Dodaj toggle "Auto-play" w nagłówku quizu: gdy włączony, każde nowe słowo jest automatycznie czytane 1 sekundę po wyświetleniu fiszki. W formularzu dodawania nowych słów: po zapisaniu automatycznie odtwórz wymowę jako potwierdzenie. Całość: ~12 linii JavaScript, zero nowych zależności, zero nowych tabel.
+   *Dlaczego warto: Clozemaster Radio i Duolingo speaking exercises dowodzą, że uczenie się słów bez słyszenia wymowy to nauka połowiczna — mózg buduje reprezentację ortograficzną ale nie fonetyczną, co utrudnia rozumienie mowy i mówienie. Web Speech API obsługuje `pl-PL` we wszystkich nowoczesnych przeglądarkach bez zezwolenia, bez konta, bez API key. To jest dosłownie najprostszy ze wszystkich feature'ów we wszystkich raportach — 12 linii kodu — a nikt go jeszcze nie zaproponował. Dla kogoś uczącego się polskiego jako obcego języka efekt jest natychmiastowy i odczuwalny od pierwszej sesji.*
+   *Inspiracja: Clozemaster Radio (pasywna nauka audio), Duolingo speaking exercises*
+
+---
