@@ -312,3 +312,63 @@
    *Inspiracja: Clozemaster Radio (pasywna nauka audio), Duolingo speaking exercises*
 
 ---
+
+## [29.06.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Myfxbook** — platforma weryfikacji wyników tradingowych; killer feature: jeden klik generuje publiczny, kryptograficznie zweryfikowany link z P&L, drawdownem i winratem — mentorzy i prop firmy używają tego do oceny traderów przed przekazaniem funded accountu; prywatność kontrolowana per-pole (możesz ukryć lot size, ale pokazać WR%)
+- **Boostcamp** — darmowy tracker siłowy z programami kalisteniki ("Overcoming Gravity" Steve'a Lowa); tygodniowy tonnaż per partia mięśniowa (sylwetka przód/tył świeci intensywnością proporcjonalną do sumy kg), szacowany 1RM liczony automatycznie ze każdego setu wzorem Epley'a (masa × (1 + reps/30)), RPE i RIR jako opcjonalne pola per set
+- **Fabulous** — apka rytuałów opartych na nauce behawioralnej Duke University; specjalność: sekwencja kroków ze stoperem dla każdego, wizualna ścieżka zamiast checkboxów; "anchor habits" — każda nowa czynność przyczepia się do istniejącej (kawa → medytacja → zimny prysznic); guided weekly planning jako osobny niedzielny rytuał
+- **Finch** — wirtualny ptak kompan; unikalny mechanizm: ukończone cele dnia zamieniają się na "energię" dla ptaka, który odblokowuje podróże do nowych miejsc i stroje; odznaki milestoneowe za kamienie milowe (pierwsza seria 7 dni, 100 celów, itd.); zero kar za pominięte dni — powrót po przerwie jest ciepły
+- **Way of Life** — habit tracker z pełną siatką miesięczną 30/31 dni zamiast 7-dniowej; kolor każdej komórki = ✅/❌/⬜ dla każdego nawyku; "rok w jednym widoku" — 12 kolumn miesięcznych jednocześnie widoczne, wzorce sezonowe czytelne bez żadnych wykresów
+- **Clozemaster Radio** — tryb hands-free: apka czyta zdania głosem, 3 sekundy przerwy, czyta tłumaczenie, przechodzi do następnego — 50 kontekstowych słów podczas biegania lub między setami kalisteniki bez jednego dotknięcia ekranu; dowiedziono +40% lepszej retencji vs same flashcardy
+- **Tradervue** — profesjonalny dziennik tradingowy; moduł "Commission Report": całkowite prowizje zapłacone brokerowi, prowizja jako % brutto P&L, wykres Gross P&L (linia zielona) vs Net P&L po prowizjach (linia biała) — dla aktywnych day-traderów różnica bywa 20-40 punktów procentowych WR; feature dostępny wyłącznie w płatnym planie
+- **Strong App** — wiodący tracker siłowy iOS/Android; szacowany 1RM liczony ze każdego setu wzorem Epley'a i wyświetlany jako wykres progresji per ćwiczenie; użytkownicy cytują "widzenie jak 1RM rośnie o 1 kg co tydzień" jako główny powód nie porzucania apki po 2 miesiącach — nawet gdy trening subiektywnie stoi w miejscu
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Kalistenika] — Tygodniowy Tonnaż w kg + Opcjonalne RPE przy Każdym Secie**
+   Przy logowaniu sesji, obok pola "reps", dodaj opcjonalne pole RPE z szybkim wyborem przycisków: **6 · 7 · 8 · 9 · 10** (skala 6–10 jak w siłowni; 6 = bardzo lekko, 10 = absolutne maksimum). Pole domyślnie puste — nie blokuje zapisu. Równolegle, automatycznie obliczaj tonnage każdego setu: `reps × weight_kg`; przy ćwiczeniach z ciężarem ciała użyj edytowalnej masy ciała z profilu użytkownika (domyślnie 75 kg). W zakładce Statystyki Kalisteniki dodaj wykres słupkowy tygodniowego tonażu: 12 ostatnich tygodni na osi X, suma kg na osi Y, zielony słupek gdy tydzień bije rekord. Nad wykresem jedno zdanie: "Ten tydzień: **3.240 kg** (+12% vs poprzedni | rekord wszech czasów: 3.820 kg)". W podsumowaniu po "Zakończ sesję": czas sesji, liczba setów, tonnaż sesji, oraz jeśli podano RPE — "Średnie RPE: 7.8 (umiarkowanie ciężko)". Technicznie: jedno INT pole `rpe` i jedno FLOAT pole `tonnage` w tabeli `exercise_logs`, `tonnage` obliczane przy zapisie setu (`reps * weight`), jeden `SUM(tonnage) GROUP BY week` query do wykresu.
+   *Dlaczego warto: Boostcamp Pro i Strong App cytują tonnage jako flagship feature — to jedyny obiektywny miernik obciążenia w kalistenice gdzie nie dokłada się talerzy. "Trenuję od 3 miesięcy i nie widzę progresu" to iluzja — przy rosnącym tonnażu progres jest, tylko niewidoczny bez liczby. RPE uzupełnia: sam tonnage nie mówi czy sesja była łatwa czy na granicy sił — RPE 9 przy 2.800 kg jest ciężej niż RPE 7 przy 3.200 kg. Dla 19-latka budującego bazę kalistenyczną przez lata to najprecyzyjniejszy dowód na to że trening działa, niezależnie od subiektywnego samopoczucia w danym dniu.*
+   *Inspiracja: Boostcamp Pro Weekly Volume Tracking, Strong App 1RM & Tonnage*
+
+2. **[Trading Journal] — Raport Prowizji: Gross P&L vs Net P&L po Kosztach Transakcji**
+   Dodaj pole `commission_usd` (DECIMAL(8,2), domyślnie 0.00) do każdego tradu. W formularzu: trzecia linijka po P&L — "Prowizja/spread: $___" z pre-wypełnieniem domyślną prowizją z ustawień konta (jednorazowa konfiguracja: np. "$3.50 per lot" lub "5 pips spread"). W zakładce Statystyki tradingu dodaj sekcję "Koszty transakcji": (a) wielka neonowa cyfra "**−$847**" = łączna prowizja za bieżący miesiąc; (b) wykres: **Gross P&L** (zielona linia) vs **Net P&L** (biała linia) tygodniowo — wizualna szczelina między liniami to koszt aktywności; (c) automatyczny insight: "Prowizje stanowią **X%** Twojego brutto zysku" lub "Każdy trade kosztuje Cię średnio **Y pipsów** zanim zarobisz pierwszy cent". Jeśli X > 30%: czerwony alert "⚠️ Wysokie koszty transakcji — rozważ rzadsze, selektywniejsze wejścia lub tańszego brokera". Technicznie: jedno pole DECIMAL w tabeli `trades`, suma prowizji to jeden SUM query, wykres używa istniejącego systemu SVG/Recharts z dodatkową linią.
+   *Dlaczego warto: Tradervue ma Commission Report wyłącznie w płatnym planie i jest to jeden z największych "eye-opener" momentów dla aktywnych traderów — wielu day-traderów nie zdaje sobie sprawy, że gross P&L to +$1.200 a net po prowizjach to +$380. Prop firmy (FTMO, Apex) liczą challenge po prowizjach — ignorowanie ich przy ocenie strategii fałszuje obraz o 10–40% i prowadzi do błędnych wniosków o skuteczności setupu. Żaden z poprzednich 7 raportów nie zaproponował tego pomysłu mimo że jest jednym z najłatwiejszych do implementacji i najbardziej bolesnych do zignorowania.*
+   *Inspiracja: Tradervue Commission Reports*
+
+3. **[Polski] — Tryb "Radio": Automatyczne Audio-Powtórki Hands-Free Bez Ekranu**
+   Na stronie Polski dodaj przycisk "**▶ Radio**" obok przycisku "Zacznij Quiz". Kliknięcie uruchamia tryb hands-free: apka automatycznie przechodzi przez WSZYSTKIE słowa zaplanowane na dzisiejszą powtórkę (z kolejki SM-2). Dla każdego słowa sekwencja: ① Web Speech API czyta polskie słowo głosem `pl-PL`, ② 2.5 sekundy ciszy, ③ czyta angielskie tłumaczenie, ④ 1.5 sekundy przerwy → następne słowo. Zero klikania, zero patrzenia w ekran. Na górze: pasek "Radio: **12/43** — pozostało ~5 min" + przyciski "⏸ Pauza" i "⏭ Pomiń". Po zakończeniu wszystkich słów: modal "📻 Odsłuchano 43 słowa. Zacząć teraz quiz powtórkowy?" (Tak / Zapisz na później). Słowa odsłuchane w trybie Radio NIE zaliczają się automatycznie jako "przejrzane" — Radio to ekspozycja, nie weryfikacja. Technicznie: zero nowych tabel, zero API calls — wyłącznie `speechSynthesis.speak()` + `setTimeout()` w pętli przez tablicę `dueWords`. Dosłownie ~25 linii JavaScript.
+   *Dlaczego warto: Poprzedni raport (22.06) zaproponował przycisk 🔊 per słowo i auto-play w quizie — to był krok w dobrym kierunku. Radio to inna klasa UX: nie klikasz nic, nie patrzysz w ekran, możesz ćwiczyć kalistenikę i słuchać jednocześnie. Clozemaster Radio jest opisywany przez użytkowników jako "game changer podczas biegania i ćwiczeń" — dokładnie Twoja sytuacja między setami push-upów. Dla osoby która ma 43 słowa do powtórki — 5 minut słuchania bez ekranu jest realnie łatwiejsze do wciśnięcia w dzień niż uruchamianie quizu.*
+   *Inspiracja: Clozemaster Radio Mode*
+
+4. **[Dashboard] — Niedzielny Rytuał Planowania: 3-Krokowy Wizard Celów Tygodnia**
+   Co niedzielę między 17:00 a 23:59, przy pierwszym otwarciu Dashboardu, wyświetl full-screen overlay (nie małego modala — pełny ekran żeby nie było pokusy zamknięcia) z trzema krokami:
+
+   **Krok 1 — Retrospekcja** (auto, 10 sekund patrzenia): 5 liczb zeszłego tygodnia — Kalistenika X/6 sesji, Słowa X/35, Trading X sesji, Dziennik X/7, Energia avg X/10. Duże cyfry, zielone/czerwone. Przycisk "Dalej →".
+
+   **Krok 2 — Cele na ten tydzień** (30–60 sekund): 5 edytowalnych pól pre-wypełnionych inteligentnym domyślnym (jeśli zeszły tydzień był 4/6 sesji → domyślne "5 sesji", jeśli 6/6 → "6 sesji"). Format: lewa kolumna = moduł, prawa = cel liczbowy. Przycisk "Zapisz i zacznij tydzień →".
+
+   **Krok 3 — Jeden Insight Claude'a** (opcjonalny, 2–3 sekundy generowania): "Na podstawie Twojego tygodnia (energia avg 6.2, 4/6 sesji, winrate 48%) — jeden konkretny nawyk który może poprawić najsłabszy obszar:" → 1-2 zdania po polsku. Fallback jeśli API > 5s: pusty krok, bez blokowania.
+
+   Cele zapisują się do tabeli `weekly_goals` (5 TINYINT pól + data tygodnia). Przez cały tydzień mini-widget "Cele tygodnia" na Dashboardzie: 5 linii z auto-zaktualizowanymi liczbami z modułów i checkboxem-stanem ✅/🟡/❌.
+   *Dlaczego warto: Fabulous zbudował retencję na guided rituals — klucz to że WSZYSTKIE kroki są w jednym flow, nie w ukrytym menu. Żaden z poprzednich 7 raportów nie zaproponował mechanizmu świadomego wyznaczania celów na tydzień — a to jest fundament GTD, OKR i każdego systemu produktywności. Bez planowania wszystkie inne pomysły są reaktywne: śledzisz co było, nie decydujesz co będzie. Mini-widget przez cały tydzień sprawia, że cele są widoczne każdego dnia, nie tylko w niedzielę. Technicznie: mała tabela `weekly_goals`, jeden LocalStorage klucz z datą ostatniego wyświetlenia, jedno wywołanie Claude API (< 200 tokenów).*
+   *Inspiracja: Fabulous guided weekly planning ritual, Notion Life OS Weekly Review*
+
+5. **[Life Dashboard] — Galeria Osiągnięć: Odblokowane Odznaki za Kamienie Milowe**
+   Stwórz nową stronę "Osiągnięcia" w nawigacji. Zdefiniuj w kodzie 20–25 odznak zgrupowanych w 5 kategorii:
+
+   🏋️ **Kalistenika**: "Pierwsze 10 sesji", "Seria 30 dni z rzędu", "Tonnaż 10.000 kg łącznie", "Pierwsze 1.000 Pull-upów"
+   📚 **Polski**: "100 słów w słowniku", "30 dni z quizem z rzędu", "500 słów opanowanych (mastered)"
+   📈 **Trading**: "Pierwsze 10 tradów zalogowanych", "Miesiąc bez naruszenia reguł prop firm", "Breakeven po prowizjach"
+   📓 **Review**: "7 wpisów z rzędu", "365 wpisów łącznie", "Pierwszy wpis z energią 10/10"
+   🔥 **Ogólne**: "Pierwszy pełny tydzień (wszystkie moduły)", "Seria 100 dni nawyku sport", "180 dni od startu aplikacji"
+
+   Każda odznaka: okrągła ikona (emoji na neonowym gradientowym tle), nazwa, data odblokowania — lub "🔒 Zablokowane: [warunek]". Przy odblokowaniu: toast notification "🏆 Nowa odznaka: Pierwsze 1.000 Pull-upów!" widoczny przez 4 sekundy, zapis do tabeli `achievements (id, unlocked_at)`. Na Dashboardzie, pod siatką nawyków: 3 ostatnio odblokowane odznaki jako mini-row z emoji + datą.
+   *Dlaczego warto: Finch i Habitica udowodniły, że odznaki milestoneowe trzymają użytkowników DŁUGO po tym jak nowość apki przemija — bo dają poczucie tożsamości trwałej niezależnie od aktualnego streaka. Odznaka "Pierwsze 1.000 Pull-upów" jest dowodem który przeżyje jakikolwiek zły tydzień. Technicznie jest to najlepsza proporcja wartość/koszt ze wszystkich pomysłów w tym raporcie: tabela z 2 kolumnami, trigger-check w każdym POST endpoincie (kilka linii per endpoint), jeden komponent React z galerią. Brak odznak w aplikacji która śledzi tak wiele danych to brakujące ogniwo emocjonalne — liczby bez kamieni milowych są suche.*
+   *Inspiracja: Finch achievement gallery & energy unlocks, Habitica badge system*
+
+---
