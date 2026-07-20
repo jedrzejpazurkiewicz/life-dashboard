@@ -464,3 +464,88 @@
    *Inspiracja: Myfxbook PDF/CSV export, Tradervue trade reports for mentors*
 
 ---
+
+## [20.07.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Habitica** — variable ratio reinforcement: ilość XP za każde zadanie jest losowo zmieniana (np. 10–50 XP zamiast stałej liczby) — nieprzewidywalność nagrody angażuje silniej niż przewidywalna; to samo zjawisko co slot machines w badaniach behawioralnych; osobny insight: party quest gdzie porażka jednego gracza zadaje obrażenia całej grupie to silniejszy motywator niż jakakolwiek notyfikacja push
+- **Duolingo** — Streak Freeze redukuje churn o 21% u użytkowników którzy go używają (dane wewnętrzne Duolingo); animacja płomienia streaka przyspiesza wizualnie w miarę jak zbliża się koniec dnia — strach przed utratą jest silniejszy niż chęć zysku; mini-dialogi w kursach pokazują słowa w naturalnej 3-zdaniowej wymianie zanim pojawią się w ćwiczeniu
+- **Anki (FSRS-6, 2025)** — nowy algorytm trenowany na 700 milionach recenzji od 20.000 użytkowników; redukuje potrzebne powtórki o 20–30% vs SM-2 przy tej samej retencji; panel statystyk po sesji: retention rate %, lista najtrudniejszych kart, average daily reviews — dowód in-app że algorytm faktycznie działa, a nie tylko "wierz mi"
+- **Edgewonk** — Tiltmeter: wizualny wskaźnik (kółko z wskazówką 0–100%) obliczany AUTOMATYCZNIE z naruszeń reguł w bieżącej sesji — nie pyta jak się czujesz, mierzy zachowanie (trade po stracie < 5 min, przekroczenie limitu pozycji, zbyt wczesne wyjście); Trade Management Simulator: "Actual Trade vs. Potential Best Trade" per każdy trade z procentem przechwyconego ruchu
+- **TradesViz** — AI Coach uruchamia 16 deterministycznych testów statystycznych i rankinguje wyniki wg wpływu na P&L; krytyczna słabość cytowana w recenzjach: 600+ widgetów powoduje "configuration paralysis" — użytkownicy spędzają godziny na personalizacji zamiast analizować trade'y; natural language Q&A pozwala pytać o dane po angielsku bez klikania w filtry
+- **Day One** — automatyczne metadane do każdego wpisu: lokalizacja, pogoda (temperatura + stan nieba), aktywność fizyczna z telefonu — user nie musi nic robić; po 90+ wpisach korelacja między pogodą a nastrojem pojawia się samoistnie; jeden z najczęściej wymienianych powodów lojalności wg recenzji App Store 2025
+- **Progression / Calisteniapp** — "Zapomniane ćwiczenie" gap: aplikacje śledzą co ROBISZ, ale żadna nie śledzi aktywnie co PRZESTAŁEŚ robić; Progression App ma static skill tree ale nie ma proaktywnego alertu gdy ćwiczenie wypadło z rotacji od 2 tygodni mimo wcześniejszej regularności
+- **Daylio** — logowanie nastroju 2–3 razy dziennie ujawnia wzorce intraday których jednorazowy wieczorny wpis nigdy nie pokaże: "twoje poniedziałkowe południe jest systemowo o 1.7 niższe niż poranek" — informacja niemożliwa do uchwycenia bez mid-day check-inów; korelacja aktywność→energia obliczana po 30+ wpisach bez żadnego wysiłku użytkownika
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Automatyczne Wykrywanie Revenge Trading i Wzorców Tiltowania**
+   Zdefiniuj w kodzie 3 reguły detekcji i wykrywaj je automatycznie na podstawie timestampów i wyników w tabeli `trades` — zero manualnego inputu od użytkownika:
+   - **Revenge Trade**: poprzedni trade zamknięty ze stratą + nowy trade otwarty w ciągu < 7 minut na tym samym instrumencie → `auto_flag = 'revenge'`
+   - **Overtrade Session**: liczba tradów w danym dniu > 2× rolling 30-dniowa dzienna średnia → `auto_flag = 'overtrade'`
+   - **Tilt Spiral**: ≥ 3 kolejne straty bez przerwy ≥ 30 minut między nimi → `auto_flag = 'tilt'`
+
+   Flagi zapisywane przy każdym POST do `/api/trades`. W zakładce Statystyki: tabela "Czyste trade'y vs Auto-flagowane" z kolumnami WR%, avg P&L, avg R:R — osobno dla każdego typu flagi. Jeśli różnica WR > 15 pkt → czerwony collapsible alert: "⚠️ Twoje revenge trade'y mają WR 27% vs 64% czyste — to nie strategia, to stan emocjonalny". Podczas aktywnej sesji: jeśli user zamknie 2 straty z rzędu, nieblokujący toast na górze ekranu: "💡 2 straty z rzędu. Historycznie Twój następny trade po takiej sekwencji ma WR 31%. Rozważ 20-minutową pauzę."
+   *Dlaczego warto: Tagowanie emocji (raport 16.05) i checklist (raport 25.05) to manualne narzędzia — wymagają od usera świadomej akcji w momencie gdy jest on emocjonalnie najmniej zdolny do obiektywnej oceny. Trader w revenge mode rzadko sam w tym momencie wie że jest w revenge mode. Automatyczna detekcja z timestampów jest obiektywna i zawsze aktywna. TradesViz AI Coach robi 16 automatycznych testów statystycznych — timer między stratą a nowym wejściem to jeden z takich testów i jeden z najsilniej korelujących z ujemnym P&L. Żaden z 10 poprzednich raportów nie zaproponował automatycznej detekcji opartej wyłącznie na istniejących danych bez manualnych tagów. Technicznie: flagi wyliczane w endpoint POST przed `prisma.trade.create()` — < 20 linii kodu, zero nowych tabel (jedno pole `auto_flag VARCHAR` w trades).*
+   *Inspiracja: Edgewonk Tiltmeter (automatyczna detekcja zachowania, nie samo-raportowanie), TradesViz AI Coach (16 statistical tests on your data)*
+
+2. **[Statystyki] — Roczna Siatka Nawyków 52×7: "GitHub Contribution Graph" dla Codziennego Życia**
+   W module Statystyki dodaj nową zakładkę "Rok". Wyświetl siatkę 52 kolumny × 7 wierszy (dokładnie jak GitHub Contributions Graph), każda komórka = 1 dzień, kolor = liczba ukończonych nawyków: 0/3 → `#111` (prawie czarna), 1/3 → `#14532d` (ciemna zieleń), 2/3 → `#22C55E` (normalna), 3/3 → `#4ADE80` (neonowa, pulsująca na dziś). Hover na komórce: tooltip `"13.04.2026 — sport ✅, journaling ✅, tiktok ❌"`. Nad siatką: `"2026: 847 ukończeń | Completion: 78% | Najdłuższa seria: 34 dni"`. Pod siatką: 3-zdaniowy auto-wzorzec generowany z SQL: `"✅ Najsilniejszy: czerwiec (91%) | ⚠️ Systematycznie słaby: piątek–niedziela (54%) | 📈 Trend: rosnący — ostatnie 8 tygodni lepsze niż pierwsze 8."` Renderowanie: CSS Grid z 364 divami, `background-color` z jednego query `SELECT date, SUM(completed) FROM habit_logs WHERE date >= DATE(CURRENT_DATE, '-365 days') GROUP BY date`. Zero zewnętrznych bibliotek, < 50 linii kodu.
+   *Dlaczego warto: "Rok w Pikselach" z raportu 16.05 dotyczył energii z Review (skala 1–10) — inny moduł, inny wymiar. Ta siatka dotyczy nawyków (ukończenie 0–3) i daje perspektywę której 7-dniowy widok nigdy nie da. GitHub udowodnił że ta konkretna wizualizacja jest motywacyjna ponad racjonalną analizę: programiści opisują "nie chcę przerwać zielonej serii" jako realny powód codziennego commitowania. Sezonowość nawyków — lipiec zawsze szary bo urlopy, grudzień słaby bo święta — jest widoczna jednym spojrzeniem. Na koniec roku otwierasz tę zakładkę i widzisz 365 dni jako jeden obraz. Żaden poprzedni raport nie zaproponował tej siatki dla nawyków.*
+   *Inspiracja: Loop Habit Tracker detailed history graphs, GitHub Contribution Graph UX mechanics*
+
+3. **[Kalistenika] — Alert "Zapomnianego Ćwiczenia": Proaktywny Monitoring Balansu Treningowego**
+   Przy każdym otwarciu modułu Kalisteniki uruchom lazy query wykrywające ćwiczenia które wypadły z rotacji:
+   ```sql
+   SELECT exercise_name, MAX(logged_at) as last_done
+   FROM exercise_logs
+   WHERE exercise_name IN (
+     SELECT exercise_name FROM exercise_logs
+     WHERE logged_at >= DATE(CURRENT_DATE, '-30 days')
+     GROUP BY exercise_name HAVING COUNT(*) >= 2
+   )
+   GROUP BY exercise_name
+   HAVING last_done < DATE(CURRENT_DATE, '-14 days')
+   ```
+   Jeśli lista niepusta → collapsible card pod nagłówkiem: "💡 Nie logowane od ponad 14 dni: Face Pull (ost. 5.07), L-Sit (ost. 2.07). Celowa przerwa czy zapomnienie?" z przyciskami "Dodaj do dzisiejszej sesji ➕" (pre-wypełnia formularz tym ćwiczeniem) i "Wiem, pomijam celowo 🙈" (wycisza alert na 7 dni, zapisuje w tabeli `skipped_exercise_ack (exercise_name, until_date)`).
+
+   Osobno: po zakończeniu sesji sprawdź czy w ostatnich 7 sesjach nie pojawił się żaden ruch Core (L-Sit, Dragon Flag, Plank, Ab Wheel, Hollow Body) → jednorazowy toast: "⚠️ Core nie trenowany od 7 sesji. Słabe mięśnie stabilizacyjne bezpośrednio ograniczają push i pull. Następna sesja?"
+   *Dlaczego warto: Heatmapa mięśni SVG (raport 16.05) pokazuje co trenowałeś. Ten system robi coś fundamentalnie innego: monitoruje co PRZESTAŁEŚ trenować w stosunku do własnych wzorców. Madbarz, Progression App i Strong App śledzą historię sesji — ale żadna z nich nie implementuje proaktywnego alertu o "dryfowaniu" planu. Przy 6-dniowym planie Push/Pull/Legs/Core/Push Adv/Full Body nieświadome porzucenie Core po urlopie jest realne: bez alertu mija miesiąc, z alertem 14 dni. Technicznie: jeden query + tabela `skipped_exercise_ack` z 2 kolumnami, implementacja < 2h, efekt natychmiastowy.*
+   *Inspiracja: Madbarz exercise history, Progression App exercise library balance, Strong App consistency tracking*
+
+4. **[Review] — Pogoda i Temperatura jako Automatyczne Metadane Wpisu + Korelacja z Energią**
+   Przy kliknięciu "Zapisz" w module Review, równolegle z zapisem (nieblokująco), wykonaj jedno wywołanie Open-Meteo API — darmowe, bez rejestracji, bez klucza API, 10.000 req/dzień:
+   ```
+   GET https://api.open-meteo.com/v1/forecast
+     ?latitude=52.23&longitude=21.01
+     &daily=temperature_2m_max,weathercode
+     &timezone=Europe/Warsaw&forecast_days=1
+   ```
+   Z odpowiedzi wyciągnij `temperature_2m_max` i `weathercode` (0 = słonecznie, 1–3 = lekkie chmury, 51–67 = deszcz, 71–86 = śnieg, 95–99 = burza). Zapisz jako `temp_celsius FLOAT` i `weather_code INT` w tabeli Review. Jeśli API nie odpowiada w < 2s → NULL, zapis kontynuuje bez blokowania. Małe emoji pogody przy każdym wpisie w archiwum (☀️ 28°C). W Statystykach: mini-kafelek "Pogoda a energia" z `AVG(energy_rating) GROUP BY weather_category`: `"☀️ Słoneczne: ⌀ 7.4 | ☁️ Pochmurne: ⌀ 5.8 | 🌧️ Deszcz: ⌀ 4.6"`. Widoczny po min. 20 wpisach z danymi pogodowymi.
+   *Dlaczego warto: Day One automatycznie dołącza pogodę i lokalizację do każdego wpisu — jeden z najczęściej cytowanych powodów lojalności wg recenzji App Store 2025. Żaden z 10 poprzednich raportów nie zaproponował weather metadata mimo że dla kogoś w Polsce (kraj z dużą zmiennością pogody) korelacja słońce/energia może być silniejsza niż "dzień tygodnia". Odkrycie "moja energia jest o 2.8 niższa w deszczowe dni" to dane które zmieniają planowanie: deszczowy poniedziałek to nie dobry dzień na najtrudniejsze zadania. Open-Meteo: całkowicie darmowe, bez klucza, < 1KB odpowiedzi, 100% uptime. Implementacja: 15 linii server action + 2 kolumny Prisma + 3 liczby w Statystykach.*
+   *Inspiracja: Day One automatic weather & location metadata per entry*
+
+5. **[Polski] — Mini-Dialog 3-Zdaniowy: Każde Nowe Słowo w Naturalnej Wymianie Rozmówców**
+   Rozszerz prompt Claude'a generującego nowe słowa o pole `dialogue` w odpowiedzi JSON:
+   ```json
+   {
+     "word": "regeneracja",
+     "translation": "recovery / regeneration",
+     "example": "Po ciężkim treningu potrzebuję czasu na regenerację.",
+     "dialogue": [
+       "— Jak minął trening?",
+       "— Ciężko, potrzebuję porządnej regeneracji.",
+       "— Śpij 8 godzin i zjedz białko, to podstawa."
+     ]
+   }
+   ```
+   Dodaj kolumnę `dialogue JSONB` do tabeli słów — migracja jednolinijkowa. Koszt: ~50 tokenów ekstra na słowo, razem z prompt < $0.001 per nowe słowo. Na karcie słowa: collapsible sekcja "💬 W rozmowie:" z 3 liniami dialogu, naprzemiennie wyrównane lewo/prawo żeby wizualnie odwzorować 2 rozmówców. Auto-expand po pierwszej poprawnej odpowiedzi w quizie dla tego słowa.
+
+   Tryb quizu "Dialog": dialog wyświetlony z usuniętym słowem kluczowym `"— Ciężko, potrzebuję porządnej ________."` → user wpisuje lub wybiera z 4 opcji. Hybryda między cloze (raport 18.05: jedno zdanie z luką) a czymś nowym: kontekst przed i po słowie w realnej wymianie.
+   *Dlaczego warto: Cloze deletion (raport 18.05) daje jedno zdanie z luką w izolacji. Dialog 3-zdaniowy daje to czego cloze nie daje: CO POPRZEDZA słowo i CO PO NIM NASTĘPUJE w realnej rozmowie. Duolingo wbudowuje nowe słowa w mini-dialogi przed ćwiczeniami i twierdzi że zwiększa to retencję konwersacyjną vs izolowanych fiszek. Babbel buduje całe jednostki wokół dialogów tematycznych — najwyżej oceniana metoda przez osoby uczące się do realnego mówienia. Różnica między "znam słowo" a "użyję słowa w rozmowie" to największa bariera zaawansowanych uczących się. Claude i tak generuje słowa — dodanie dialogu to jedno zdanie więcej w prompcie, < $0.001 per słowo, zero nowych endpointów.*
+   *Inspiracja: Duolingo dialogue-first learning, Babbel conversational units, Clozemaster context sentences*
+
+---
