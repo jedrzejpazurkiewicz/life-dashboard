@@ -3,6 +3,50 @@
 
 ---
 
+## [19.10.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Loop Habit Tracker** — aktualizacja z lipca 2026 dodała widoki Dzień/Tydzień/Miesiąc, siatka kafelków oraz dedykowany licznik "dni bez" dla złych nawyków (counting days since last violation zamiast typowego streaka), co zmienia logikę motywacji o 180 stopni
+- **Habitica** — poza RPG: system "adaptive minimum viable habit" — gdy zaznaczasz task jako zbyt trudny, aplikacja sama proponuje okrojoną wersję (zamiast pompek × 30 sugeruje × 5) żeby nie przerwać serii; w 2026 dodano też AI-driven reminders dopasowane do historii użytkownika
+- **Edgewonk** — Tiltmeter z podziałem na mikro-stany: nie tylko "FOMO vs zdyscyplinowany", ale też "overconfident po serii wygranych" (revenge win trading) i "gun-shy po serii strat" — dwa osobne błędy psychologiczne o odwrotnych kierunkach; Discipline Meter agreguje je w jeden tygodniowy wynik 0–100
+- **TradesViz** — Risk Dashboard oparty na R-multiples (nie USD/pipsach): 1R = ryzyko na trade, wykres equity w jednostkach R niezależny od wielkości pozycji czy konta; po przejściu z 10K na 25K konto krzywa R wygląda tak samo — porównywalność cross-account
+- **Clozemaster** — "Fluency Fast Track": każde słowo ma `frequency_rank` z korpusu języka (top 500, top 2000, rzadkie); algorytm rezerwuje 70% czasu powtórek na top-500 dopóki nie są opanowane — nie pozwala uczyć się "abstrakcji" zanim solidnie nie znasz "dom"
+- **Daylio** — od 2025 możliwość wielokrotnego logowania nastroju w ciągu dnia (poranek / południe / wieczór); po 60+ wpisach automatyczna heatmapa energii wg godziny dnia — widać biologiczny rytm bez żadnej analizy, co inaczej zajęłoby rok dziennikowania raz dziennie
+- **Reflectly** — "Emotional Patterns": zamiast numerycznego suwaka, 8 emoji-tagów emocji do zaznaczenia każdego wieczoru (możliwe wiele naraz); po 30 dniach wykres korelacji "które emocje współwystępują z niską energią" — osobny od aktywności, bo "zestresowany" ≠ "zmęczony"
+- **Madbarz / Street Workout App** — plany treningowe 1–26 tyg. automatycznie dostosowujące się do aktualnego dnia; "Sesja awaryjna 5 min" jako osobny tryb dla dni z niską energią — cel: nie przerywać streaka, nie wymuszać pełnego treningu
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Krzywa Equity w R-Multiple + Risk Dashboard Niezależny od Wielkości Konta**
+   Dodaj do każdego tradu automatyczne obliczenie `r_multiple = actual_pnl_usd / risk_usd` (risk_usd = pozycja × SL w pipsach × pip_value). W sekcji Statystyki dodaj drugi wykres liniowy obok obecnej krzywej USD — oś Y w jednostkach R (np. +2.3R, −1.0R). Pod nim 4 liczby: **Avg R:R zrealizowany**, **% tradów ≥ 1R**, **Max drawdown w R**, **Najdłuższa seria stratna w R**. Przełącznik "USD / R-Multiple" w nagłówku sekcji. W formularzu nowego tradu dodaj pole `Risk per trade (USD)` — jeśli wypełnione, R-multiple oblicza się automatycznie; jeśli puste, zostawia wartość null bez blokowania zapisu.
+   *Dlaczego warto: TradesViz i Edgewonk opierają zaawansowaną analitykę na R-multiple, bo tylko ta jednostka jest porównywalna między kontami różnych rozmiarów i między różnymi instrumentami. Przy FTMO/TopStep gdzie konto rośnie z 10K do 25K, wykres USD jest zawyżony — R-multiple pokazuje rzeczywistą edge niezależnie od kapitału. Dla prop-tradera który przechodzi między wyzwaniami to jedyna miara mówiąca "moja strategia działa" vs "miałem szczęście z rozmiarem pozycji".*
+   *Inspiracja: TradesViz Risk Dashboard, Edgewonk R-Multiple analytics*
+
+2. **[Dashboard] — Licznik "Dni Bez" dla Złych Nawyków zamiast Streaka**
+   Zmień logikę wyświetlania nawyku "TikTok < 30 min" z klasycznego streaka na odwrócony licznik. Zamiast "🔥 14 dni z rzędu TikTok < 30 min" wyświetl: "🧠 Czysty od: 14 dni — rekord: 31 dni". Gdy nawyk zostaje złamany (TikTok > 30 min), licznik wraca do 0 ale pokazuje też poprzedni rekord: "⚠️ Reset! Poprzedni rekord: 14 dni. Spróbuj pobić 15." Na stronie Statystyki dodaj minimalny histogram: ile razy licznik był resetowany w każdym miesiącu — mniej resetów = mniejsze uzależnienie, niezależnie od obecnego licznika.
+   *Dlaczego warto: Loop Habit Tracker dodał ten tryb w lipcu 2026 jako odpowiedź na research: streak "robiłem coś dobrego" i licznik "nie robiłem czegoś złego" to psychologicznie inne rzeczy i wymagają różnych widoków. Dla uzależnienia od TikToka, licznik "dni bez przekroczenia" jest silniejszy niż streak — bo każde naruszenie jest widoczne jako konkretny reset rekordu, a nie tylko "wczoraj nie zaznaczyłem". Technicznie: jedno pole `bad_habit_last_break_date` i jedna dodatkowa gałąź warunkowa w komponencie nawyku.*
+   *Inspiracja: Loop Habit Tracker breaking bad habit counter (aktualizacja lipiec 2026)*
+
+3. **[Review] — Tagi Emocji (8 ikon) obok Suwaka Energii + Korelacja z Wynikami**
+   W module Review, bezpośrednio pod suwakiem 1–10, dodaj siatkę 8 emoji-tagów emocji — zaznaczać można wiele naraz, single-tap toggle: 💪 Zmotywowany / 😰 Zestresowany / 😌 Spokojny / 😤 Sfrustrowany / 💡 Kreatywny / 😴 Wyczerpany / 😊 Szczęśliwy / 😟 Zniechęcony. Przechowuj w nowej tabeli `review_emotion_tags` (wiele tagów per wpis). Po 30+ wpisach w Statystykach dodaj nową sekcję "Twoje emocje vs wyniki": lista 8 emocji z avg energią i avg P&L tradingowym dla dni z każdym tagiem. Przykładowy wynik: "💪 Zmotywowany: energia 8.4 avg, P&L +$124 avg | 😤 Sfrustrowany: energia 5.1, P&L −$87 avg".
+   *Dlaczego warto: Obecne activity-tagi z maja (siłownia, cold shower, etc.) mierzą co ROBIŁEŚ — tagi emocji mierzą JAK SIĘ CZUŁEŚ. To dwa ortogonalne wymiary: możesz być zmotywowany i wyczerpany jednocześnie, albo spokojny mimo złego P&L. Reflectly pokazał że ta różnica jest kluczowa — użytkownicy najczęściej cytują korelację "frustracja → zły trading" jako "moment który zmienił jak podchodzę do dnia". Dla kogoś w fazie prop challenge: wiedza że frustracja koreluje ze stratami o −$87 avg to twarda liczba bardziej przekonująca niż zasada "nie traduj gdy jesteś wkurwiony".*
+   *Inspiracja: Reflectly Emotional Patterns, Daylio multi-mood logging*
+
+4. **[Polski] — Rank Częstości Słowa przy Generowaniu (frequency_rank) + Priorytet w Powtórkach**
+   Rozszerz prompt Claude'a generującego nowe słowa o jedno pole w JSON: `"frequency_rank": 847` — ranga słowa w korpusie języka polskiego (1 = najczęstsze "być", 10000+ = rzadkie). Dodaj kolumnę `frequency_rank INTEGER` do tabeli słów w Prisma (migracja jednolinijkowa). Na liście słów wyświetl badge obok każdego: "🔥 TOP 500" (rank ≤ 500) / "📚 TOP 2000" (501–2000) / "🔬 Zaawansowane" (2000+). W algorytmie SM-2 przy wyborze słów do quizu dodaj mnożnik: słowa TOP 500 mają 2× wyższy priorytet niż Zaawansowane przy równej dacie następnej powtórki. Na górze strony Polski dodaj micro-stat: "TOP 500 opanowanych: 34/500 (6.8%) — zanim nie osiągniesz 80%, priorytet pozostaje na tej grupie".
+   *Dlaczego warto: Clozemaster udowodnił że nauka "interesujących" rzadkich słów zamiast najczęstszych jest główną przyczyną "plateau" — uczeń po 6 miesiącach nadal nie rozumie zwykłej rozmowy, bo zna "abstrakcję" ale nie zna "jakkolwiek". Dla polszczyzny top-1000 słów stanowi ~85% tekstu mówionego — ucząc je w pierwszej kolejności, postęp jest wielokrotnie szybszy. Claude generuje słowa i tak, dodanie jednego pola do odpowiedzi JSON kosztuje dosłownie 0 dodatkowych tokenów i 5 minut implementacji po stronie backendu.*
+   *Inspiracja: Clozemaster Fluency Fast Track, badania nad częstością słów (Zipf's Law)*
+
+5. **[Kalistenika] — Tryb "Sesja Awaryjna 5 min" dla Dni z Niską Energią**
+   Zdefiniuj w kodzie 6 micro-sesji (po jednej per typ dnia: Push / Pull / Legs / Core / Push Advanced / Full Body), każda = 3 ćwiczenia × 2 serie, łączny czas ~5 minut. Micro-sesja Push: 2×10 standard push-up + 2×10 pike push-up + 2×15 diamond push-up. Na górze strony Kalisteniki: jeśli wczorajsza ocena energii z modułu Review wynosi ≤ 4/10 — wyświetl żółty baner "⚡ Wczoraj mała energia (4/10). Proponuję Sesję Awaryjną (5 min) zamiast pełnego Push Day — streak nie zostaje przerwany." Kliknięcie ładuje micro-sesję. Po ukończeniu zapisywana jest normalnie, ale z flagą `is_emergency_session: true`. W statystykach sesji awaryjne widoczne jako wypełniony (nie pusty) dzień, ale w innym kolorze (#F59E0B amber zamiast zieleni).
+   *Dlaczego warto: Madbarz i Street Workout App mają ten tryb od dawna i jest to jedno z najwyżej ocenianych rozwiązań w recenzjach — główny powód porzucenia aplikacji treningowych to "jedna opuszczona sesja → poczucie że wszystko przepadło → reset motywacji". Nawyk "cokolwiek zrobiłem" jest 10× bardziej odporny niż nawyk "pełny trening lub nic". Dla kogoś kto trenuje 6 dni w tygodniu przez miesiące: jeden chory/zmęczony dzień nie powinien przerywać serii — micro-sesja utrzymuje rytm biologiczny bez niszczenia ciała.*
+   *Inspiracja: Madbarz quick session, Street Workout App adaptive daily plans, badania nad minimum viable habit (BJ Fogg)*
+
+---
+
 ## [16.05.2026] — Raport tygodniowy
 
 ### 🔍 Zbadane aplikacje
