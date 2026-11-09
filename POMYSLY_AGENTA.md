@@ -1162,3 +1162,46 @@
    *Inspiracja: Finch (gentle return mechanic, "coming back from adventure"), badania nad habit abandonment after single failure (BJ Fogg, James Clear)*
 
 ---
+
+## [09.11.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+- **Habitica** — gamifikacja RPG: zadania dają złoto/EXP, ale kluczową cechą jest system "Party & Quests" — wspólny boss do pokonania razem z innymi userami, gdzie niewykonanie swojego zadania zadaje obrażenia CAŁEJ drużynie — sociale accountability zamiast tylko własnej motywacji
+- **Duolingo** — model Birdbrain dynamicznie zmienia częstotliwość powtórek na podstawie nie tylko odpowiedzi, ale też czasu odpowiedzi i pozycji w sesji; najważniejsza cecha: **Streak Freeze** — jeden dzień przerwy nie niszczy serii, ale freeze trzeba wcześniej "kupić" za punkty z poprzednich dni, co wymaga planowania naprzód
+- **Anki** — czyste SRS: gdy zalejesz quiza i oznaczysz kartę "Again", wraca ona w tej samej sesji (nie następnego dnia); dla słów trudnych algorytm stosuje krótsze interwały (1 dzień → 3 dni zamiast 1 dzień → 7 dni) — rozróżnienie między "znam ale wolno" a "nie znam wcale"
+- **Edgewonk** — **True System Edge**: przy każdym tradzie osobne pole "Czy trad był zgodny z regułami?" (tak/nie/częściowo); wykres porównuje equity-curve "wszystkich tradów" vs "tylko zgodnych z regułami" — jeśli ta druga krzywa jest lepsza, to twoja strategia działa ale ty ją sabotujesz; jeśli gorsza, to strategy nie działa
+- **Tradervue** — automatyczny import tradów przez broker-API (obsługuje 50+ brokerów), dzięki czemu nie wpisujesz nic ręcznie — to natychmiast eliminuje bias potwierdzenia przy ręcznym logowaniu ("może nie wpisywać tej straty?")
+- **Madbarz** — **"Sesja awaryjna 5 minut"** jako osobny tryb: 3 ćwiczenia, 1 seria każde, koniec — cel wyłącznie utrzymanie streaka w dni bez energii; aplikacja sama wykrywa gdy ostatni trening był >5 dni temu i proponuje tę wersję zamiast pełnej sesji
+- **Reflectly / Day One** — szablony wieczornego przeglądu z **gotowymi pytaniami kontekstualnymi** zmieniającymi się co tydzień (w poniedziałek pyta o cele na tydzień, w piątek o podsumowanie), plus możliwość dodania zdjęcia z dnia — wizualny trigger dla pamięci przy przeglądaniu archiwum
+- **Notion Life OS** — **Weekly Review template** z automatycznym wciąganiem danych z baz: ile zadań ukończonych, ile nieukończonych, ile nowych słów, ile treningów — zanim napiszesz refleksję, widzisz twarde liczby tygodnia; nie musisz tego pamiętać samodzielnie
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Pole "Czy trad był zgodny z regułami?" + Dwie krzywe equity**
+   Dodaj do formularza nowego tradu przełącznik trójstanowy: `✅ Zgodny / ⚠️ Częściowo / ❌ Złamałem zasady`. W zakładce Statystyki wyświetl dwie nakładające się linie na wykresie equity — szarą (wszystkie trady) i neonową zieloną (tylko trady zgodne z regułami). Pod wykresem: "Twój system bez błędów: +X% vs rzeczywisty: +Y%". Jeśli zielona linia jest powyżej szarej, robisz sobie krzywdę własną dyscypliną; jeśli poniżej — Twoja strategia nie działa niezależnie od dyscypliny.
+   *Dlaczego warto: To najważniejsza liczba dla prop-tradera — oddziela problem "zły system" od problemu "dobry system, zła realizacja". Bez tego porównania nie wiadomo co naprawiać. Edgewonk nazywa to True System Edge i jest to ich flagship feature. Implementacyjnie: nowe pole `rule_compliance ENUM('full','partial','violation')` w tabeli trades + filtr w istniejącym zapytaniu do wykresu.*
+   *Inspiracja: Edgewonk True System Edge*
+
+2. **[Polski] — Znacznik Częstotliwości Słowa + Priorytet w Kolejce Powtórek**
+   Przy każdym słowie pokaż małą etykietę z rankingiem częstotliwości: `#128 🔥` (top 500 polskich słów wg korpusu) lub `#4820` (rzadkie). Żródło danych: open-source lista frekwencyjna języka polskiego (np. NKJP lub lista Michaela Ryana). Algorytm spaced-review powinien podwajać wagę słów z top-1000 — tzn. jeśli jest zaległa powtórka słowa #50 i słowa #3200, pokazuj #50 pierwsze. Czerwonym alertem pokaż "Masz 12 zaległych powtórek w top-500 — najpierw te!" jeśli user ma więcej niż 10 zaległości w najważniejszych słowach.
+   *Dlaczego warto: Clozemaster Fluency Fast Track pokazuje, że uczenie się rzadkich słów przed solidnym opanowaniem top-500 to największy błąd w nauce języka. Dla Jędrzeja uczącego się 5 słów dziennie przez Claude AI, bez rankingu może przez miesiąc uczyć się esotycznych słów zanim pozna podstawowe. Dane: lista frekwencyjna NKJP jest publiczna i zawiera 10 000 słów z rankingiem — jednorazowy import do nowej kolumny `frequency_rank` w tabeli Vocabulary.*
+   *Inspiracja: Clozemaster Fluency Fast Track, Anki Algorithm*
+
+3. **[Kalistenika] — Drzewo Progresji Ćwiczeń (Skill Tree)**
+   Zamiast flat listy "pompki: 3×20", pokaż wizualne drzewo progresji dla kluczowych ruchów: **Pompki:** Kolana → Normalne → Diamentowe → Archer → One-Arm. Aktualny poziom = podświetlony neon, zablokowane = szare, odblokowane = dostępne do treningu. Kryterium awansu: osiągnięcie X powtórzeń przez 3 sesje z rzędu (np. 3×20 normalne → odblokuj Diamentowe). Małe confetti + komunikat "Awans!" gdy kryterium spełnione. W dzienniku treningów obok każdego ćwiczenia: `Poziom 3/5 — do awansu: jeszcze 2 sesje ×20`.
+   *Dlaczego warto: Calisthenics Tracker (Lever) i SkillTrees AI opierają całą motywację na postępie w ramach skill tree — dla kalisteniki to naturalna struktura bo ruchy mają prawdziwe prerequisite (musisz umieć pompki żeby robić diamond). Bez tego, 19-latek trenuje latami bez poczucia postępu — skill tree zamienia "robię pompki" w "przechodzę między levelami". Nowa tabela `exercise_progressions` z macierzą level→min_reps→min_sessions + widok drzewa obok formularza sesji.*
+   *Inspiracja: Calisthenics Tracker (Lever), SkillTrees Calisthenics AI*
+
+4. **[Review] — Korelacja Aktywności z Energią (po 30+ wpisach)**
+   Gdy użytkownik ma więcej niż 30 wpisów w dzienniku wieczornym, pokaż pod polem energii nową sekcję: **"Twoje wzorce energii"** — tabelka 3×3: wiersze = zakresy energii (1-4 / 5-7 / 8-10), kolumny = czy dany dzień miał sport / trening kalisteniki / wpis w słowniku polskim. Dane brane z tabel habitów + modułu kalisteniki + modułu polskiego dla tego samego dnia. Wynik: "W dni z treningiem Twoja energia średnio: 7.2 | W dni bez treningu: 5.1". Odświeżane po każdym nowym wpisie, nie w czasie rzeczywistym.
+   *Dlaczego warto: Reflectly i Daylio pokazują, że korelacja danych z różnych śladów (aktywność → nastrój) jest najcenniejszą funkcją app wellbeing — ale zwykle wymaga manualnej pracy analitycznej. W Life Dashboard wszystkie dane już są — wystarczy ich skrzyżowanie. Dla 19-latka to natychmiastowy dowód że "trening naprawdę poprawia nastrój" — konkretna liczba zamiast ogólnego przekonania. Implementacja: jedno SQL-owe JOIN między tabelami reviews, habit_logs i calisthenics_sessions po kolumnie date.*
+   *Inspiracja: Reflectly Emotional Patterns, Daylio Activity Correlation*
+
+5. **[Dashboard] — Dzienny Wynik Kompletności (Daily Score 0–100)**
+   Na górze Dashboard, obok licznika streaka ognia, dodaj zielony okrąg z liczbą `73/100` — **Daily Score**: suma punktów za ukończone elementy dnia. Każdy element ma wagę: Trening kalisteniki (+25), 3 nawyki zaliczone (+20 razem), 5 słówek (+15), wpis wieczorny (+15), 1+ zadanie ukończone (+15), trade z wypełnionym compliance (+10). Łącznie 100 pkt. Wieczorem, jeśli score ≥ 80: komunikat "Dobry dzień 🎯" na zielono. Poniżej 50: "Jutro odbijesz 💪" na żółto. W Statystykach: wykres słupkowy 7 dni Daily Score — widać od razu który dzień tygodnia jest najsłabszy.
+   *Dlaczego warto: Notion Life OS templates i Obsidian Daily Note dashboardy budują "daily score" jako jedną liczbę agregującą cały dzień — to jedyny sposób na ocenę dnia "jako całości" zamiast fragmentarycznego patrzenia na każdy moduł osobno. Dla osoby pracującej w wielu obszarach jednocześnie (calisthenics + trading + nauka + zadania), jeden wynik daje natychmiastowy kontekst: "dzisiaj 85% — to był dobry dzień". Implementacja: funkcja `calculateDailyScore(date)` wołana przy renderowaniu Dashboard, łącząca dane z 4 tabel.*
+   *Inspiracja: Notion Life OS Daily Score, Obsidian Dataview habit aggregation*
+
+---
