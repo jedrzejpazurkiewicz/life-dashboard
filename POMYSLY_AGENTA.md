@@ -1205,3 +1205,47 @@
    *Inspiracja: Notion Life OS Daily Score, Obsidian Dataview habit aggregation*
 
 ---
+
+## [16.11.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+
+- **Loop Habit Tracker** — zaawansowany wskaźnik "siły nawyku" (habit strength 0–100%) obliczany z całej historii, nie tylko obecnego streaka; 14-dniowy streak u kogoś z 95% konsekwencją wygląda inaczej niż ten sam streak u kogoś kto startuje po restarcie
+- **Habitica** — "adaptive minimum viable habit": gdy użytkownik oznacza zadanie jako zbyt trudne, aplikacja sama proponuje okrojoną wersję żeby uratować serię zamiast ją przerywać
+- **Clozemaster** — tryb "Radio": aplikacja czyta kolejne słowa przez mikrofon bez dotykania ekranu; idealne na trening, bieganie, mycie naczyń — nauka pasywna przy zerowym tarciu
+- **Edgewonk** — "Edge Finder AI": cotygodniowy raport wysyłany emailem (od 2026 też w aplikacji) z automatycznie wykrytymi wzorcami — np. "twój winrate spada o 23% w piątki po 15:00" lub "tracisz 2× więcej gdy wchodzisz bez potwierdzenia na wyższym TF"
+- **TradesViz** — symulator "co gdybym": dla każdego tradu możesz wpisać alternatywne wyjście i zobaczyć jaki byłby wynik — ile R zostawiłeś na stole przez przedwczesne wyjścia lub ile uratowałeś przez wyjście wcześniej niż plan
+- **Calisthenics Mastery Pro** — auto-progresja: jeśli ukończyłeś ćwiczenie w 100% przez 3 sesje z rzędu, aplikacja automatycznie dodaje 2 powtórzenia lub 2.5kg i wyświetla "Nowy poziom!" z animacją
+- **Day One** — "On This Day": po otwarciu aplikacji wieczorem pokazuje miniaturkę wpisu sprzed roku/dwóch lat z tym samym dniem — silny mechanizm refleksji na progres w czasie, bez żadnej dodatkowej pracy
+- **Daylio** — wielokrotne logowanie nastroju: poranek / południe / wieczór jako osobne wpisy; po 60 wpisach automatyczna heatmapa energii wg godziny dnia — widać rytm biologiczny bez żadnej analizy
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Symulator "Co Gdybym" (What-If Exit Calculator)**
+   Przy każdym wprowadzonym tradzie dodaj zwijany panel "📊 Analiza alternatywna" z dwoma opcjonalnymi polami: `Potencjalny TP (pips/USD)` — gdzie mogłeś wyjść, i `Faktyczne wyjście (pips/USD)` — gdzie wyszedłeś. System automatycznie liczy: `missed_r = (potential_tp - actual_exit) / risk`. W sekcji Statystyki tradingu dodaj nową kartę: **"R zostawione na stole"** — suma missed_r za ostatnie 30 dni, lista 5 tradów gdzie straciłeś najwięcej przez przedwczesne wyjście, i osobno — ile uratowałeś przez wyjście wcześniej niż plan (TP niezrealizowany → SL nigdy nie trafiony). Dodaj też obok obecnej krzywej equity drugą linię przerywaną "co gdyby pełny TP" — wizualnie widać gap między rzeczywistością a potencjałem.
+   *Dlaczego warto: TradesViz ma ten symulator jako jedną z najczęściej używanych funkcji przez prop-traderów — bo większość strat FTMO/TopStep nie pochodzi ze złych setupów, ale z exit management: przedwczesne wyjście przy panice lub trzymanie stratnego tradu zbyt długo. Mając własne dane za 2 miesiące, liczba "zostawiłem +18.4R na stole przez panic-exit" zmienia psychologię szybciej niż jakiekolwiek zasady. Implementacja: 2 nowe kolumny w tabeli trades + 15 linii kalkulacji w API.*
+   *Inspiracja: TradesViz What-If Simulator*
+
+2. **[Dashboard] — Habit Consistency Score % obok streaka (siła nawyku)**
+   Aktualny streak `🔥14 dni` jest mylący — ktoś kto zrestartował 14 dni temu po 6-miesięcznej przerwie wygląda tak samo jak ktoś z 90% konsekwencją od roku. Dodaj obok każdego nawyku mały szary procent: `🔥14 | 71%`. Liczba 71% = `(liczba_ukończeń_last_30_days / 30) × 100`. Kolor procentu: ≥80% zielony (#4ADE80), 50-79% żółty, <50% czerwony. W Statystykach (zakładka nawyki) dodaj wykres liniowy "Siła nawyku przez czas" — oś Y 0-100%, 90-dniowe okno, jedna linia per nawyk. Możliwość zobaczenia jak nawyk "Sport" miał 45% w sierpniu i urósł do 87% w listopadzie — to silniejsza narroda postępu niż streak.
+   *Dlaczego warto: Loop Habit Tracker oparł swoją analitykę dokładnie na tym wskaźniku i recenzje jednogłośnie podkreślają że "habit strength zamiast streaka to jedyna uczciwa miara". Streak można mieć przez przypadek (przerwa → restart → 14 dni), siłę nawyku można zbudować tylko przez czas. Dla 19-latka budującego nawyki na lata, procent konsekwencji jest prawdziwą miarą tożsamości, nie licznik od ostatniej przerwy. Implementacja: funkcja `getHabitStrength(habit, days=30)` i jeden dodatkowy span w komponencie nawyku.*
+   *Inspiracja: Loop Habit Tracker Habit Strength algorithm*
+
+3. **[Polski] — Tryb Audio: słuchanie słów bez patrzenia w ekran**
+   Dodaj przycisk "▶ Tryb Audio" na stronie Polski. Po kliknięciu otwiera się fullscreen "player": duże słowo po polsku na środku, poniżej tłumaczenie, 3-sekundowa pauza, potem automatycznie następne słowo — bez klikania. Dźwięk: użyj Web Speech API (`speechSynthesis.speak()`) żeby przeglądarka przeczytała polskie słowo na głos (bezpłatne, bez API calls, działa offline). Kolejność: najpierw zaległe powtórki (review due), potem słowa z dzisiaj, potem top-500 nieznane. Kontrolki: ◀ poprzednie / ⏸ pauza / ▶ następne + suwak prędkości (1× / 1.5× / 2×). Po każdych 5 słowach krótka ocena "Wiedziałem / Nie wiedziałem" żeby zaktualizować SM-2 bez ekranu dotykowego.
+   *Dlaczego warto: Clozemaster Radio Mode jest najchętniej używanym trybem przez zaawansowanych użytkowników — nauka podczas treningu, gotowania, spaceru to "darmowe" minuty które normalnie są stracone. Dla kogoś trenującego kalistenikę 6 dni w tygodniu: 45 minut treningu = 45 minut pasywnego słuchania, co przy 10 słowach/minutę to 450 ekspozycji na słowa — wielokrotność dziennego celu 5 słów. Web Speech API nie wymaga żadnego backendu ani kosztów — czysty JavaScript, 30 minut implementacji.*
+   *Inspiracja: Clozemaster Radio Mode, Web Speech API*
+
+4. **[Review] — "Ten Dzień Rok Temu" — Wspomnienia Dziennika**
+   Po zapisaniu wieczornego wpisu (lub przy otwarciu strony Review gdy wpis już istnieje), wyświetl na dole strony małą kartę z jasnozielonym obramowaniem: `📅 Ten dzień rok temu (16.11.2025)` z energią, pierwszym zdaniem "co poszło dobrze" i planem na jutro z tamtego dnia. Jeśli brak wpisu rok temu — szukaj 6 miesięcy temu, potem 3 miesiące. Backend: jedno SQL-owe zapytanie `WHERE date BETWEEN today-370days AND today-358days LIMIT 1`. Dodaj też mały link "Przeglądaj poprzednie lata" otwierający archiwum przefiltrowane na ±7 dni wokół dzisiejszej daty we wszystkich dostępnych latach.
+   *Dlaczego warto: Day One zbudował "On This Day" jako jeden z najczęściej cytowanych powodów lojalności użytkowników — efekt "widzę siebie sprzed roku" jest jednym z silniejszych motywatorów do kontynuowania dziennikowania. Dla Jędrzeja za 2 lata: "rok temu miałem energię 4/10 i pisałem że FTMO challenge mi nie wyszedł — teraz mam 8/10 i account funded" — taka kartka jest silniejsza niż jakikolwiek wpis motywacyjny. Implementacja: 1 zapytanie SQL + 10 linii JSX, zero nowych tabel.*
+   *Inspiracja: Day One "On This Day", Timehop*
+
+5. **[Kalistenika] — Auto-Progresja: automatyczne zwiększanie powtórzeń po 3 pełnych sesjach**
+   Dodaj tabelę `exercise_targets` (exercise_name, current_target_reps, current_target_sets, sessions_at_target). Przy zapisywaniu sesji: jeśli użytkownik ukończył ćwiczenie w 100% (faktyczne_reps ≥ target_reps dla każdej serii), inkrementuj `sessions_at_target`. Gdy `sessions_at_target` osiągnie 3: automatycznie ustaw `current_target_reps += 2` (lub weight += 2.5kg jeśli ćwiczenie jest z obciążeniem), zresetuj licznik do 0, i wyświetl banner na górze strony przy następnym wejściu: `🏆 Progresja! Push-up: cel zaktualizowany 3×15 → 3×17. Zdobyty 3 sesje temu.` Stary cel widoczny obok nowego w historii. Na stronie głównej Kalisteniki: małe liczniki postępu obok każdego ćwiczenia: `Push-up: 2/3 sesji do awansu`.
+   *Dlaczego warto: Calisthenics Mastery Pro i Progression App opierają całą retencję na auto-progresji — bez niej kalistenika staje się schematem który nie rośnie, a user zaczyna się nudzić po 2-3 miesiącach (plateau problem). Dla treningu 6×/tydzień, bez progresji nie ma adaptacji siłowej — to nie tylko kwestia motywacji ale fizjologii. Jednocześnie ręczna aktualizacja celów jest barierą (trzeba pamiętać, wiedzieć kiedy, edytować ręcznie) — automatyzacja usuwa tarcie i daje efekt "aplikacja wie kiedy jestem gotowy na więcej". Nowa tabela + ~20 linii logiki w API.*
+   *Inspiracja: Calisthenics Mastery Pro auto-progression, Progression App*
+
+---
