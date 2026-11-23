@@ -1249,3 +1249,46 @@
    *Inspiracja: Calisthenics Mastery Pro auto-progression, Progression App*
 
 ---
+
+## [23.11.2026] — Raport tygodniowy
+
+### 🔍 Zbadane aplikacje
+- **Tradervue** — dedykowana analityka "time-of-day performance": heatmapa 7×24 pokazująca average P&L per godzina × dzień tygodnia; traderzy na własnych danych odkrywają że handel w piątek po 15:00 niszczy im tygodniowy wynik
+- **Streaks (iOS)** — maksimum 12 nawyków wymuszane przez design; automatyczny import z Apple Health (kroki, sen) żeby zaznaczyć nawyk bez dotyku ekranu — zero tarcia dla nawyków fizycznych
+- **Babbel** — każde nowe słowo pojawia się najpierw w zdaniu z kontekstem, nie jako izolowana para słowo–tłumaczenie; użytkownik uczy się "kiedy i jak" używać słowa, nie tylko "co znaczy"
+- **Clozemaster** — tryb fill-in-the-blank: w quizie wyświetla zdanie z luką zamiast słowa, np. "Idę do _____ jutro" zamiast "sklep = shop"; kontekst gramatyczny i frazeologiczny w jednym
+- **Myfxbook** — automatyczny import historii tradów z MT4/MT5 przez read-only API key; dashboard z drawdown curve, monthly breakdown, best/worst day — bez ręcznego wpisywania każdego tradu
+- **Finch** — każdy ukończony nawyk "karmi" wirtualnego ptaka który wizualnie rośnie; ptak "smutnieje" po kilku dniach bez nawyków — mechanizm loss aversion silniejszy niż licznik streaka
+- **Obsidian (Heatmap Calendar plugin)** — 365-dniowa siatka aktywności jak GitHub contribution graph ale dla dowolnych danych z notatek; tysiące pobrań właśnie dlatego że "don't break the chain" działa wizualnie
+- **Reflectly** — 7 rotujących pytań wieczornych (jedno na każdy dzień tygodnia) zamiast stałych pól; poniedziałek = "intencja tygodnia", piątek = "3 wygrane tygodnia" — eliminuje schematyczność i płytkie odpowiedzi
+
+---
+
+### 💡 Top 5 pomysłów
+
+1. **[Trading Journal] — Heatmapa P&L Według Godziny i Dnia Tygodnia**
+   W sekcji Statystyki tradingu dodaj nową wizualizację: siatka 5 (Pon–Pt) × 16 (godziny 07:00–22:00). Każda komórka = average P&L (w USD lub R) dla tradów otwartych w tej godzinie i dniu. Kolory: ciemny czerwony → szary (breakeven) → jasny neonowy zielony (#4ADE80). Komórki bez tradów: ciemnoszare. Hover: `Wtorek 10:00–11:00: 7 tradów, avg +1.3R, winrate 71%`. Pod siatką: 2 auto-wygenerowane wnioski — `Twoja najlepsza sesja: Wtorek 10:00–12:00` i `Unikaj: Piątek po 15:00 (avg -0.8R, winrate 31%)` — generowane z SQL `SELECT MAX(avg_pnl)` i `SELECT MIN(avg_pnl)`. Implementacja: `GROUP BY strftime('%H', entry_time), strftime('%w', entry_date)` → 5×16 CSS grid w React, kolor przez `hsl(142, saturation%, lightness%)` interpolowany od straty do zysku.
+   *Dlaczego warto: Tradervue users reportują że time-of-day analysis to często pierwszy "aha moment" — ktoś handluje od 6 miesięcy i dopiero heatmapa pokazuje że 70% strat pochodzi z jednego slotu czasowego. Dla prop-tradera (FTMO, TopStep) który ma limit dzienny i tygodniowy, unikanie złych godzin jest czysto defensywną strategią kapitałową — nie wymaga zmiany setupu, tylko dyscypliny czasowej. Dane już są w bazie (entry_time), potrzebne tylko zapytanie SQL + stylowanie CSS grid.*
+   *Inspiracja: Tradervue Time-of-Day Analysis*
+
+2. **[Polski] — Tryb Fiszki z Luką: Nauka Słów w Kontekście Zdania**
+   Przy dodawaniu nowego słowa do modułu Polski, dodaj opcjonalne pole `Przykładowe zdanie` (np. "Idę do sklepu jutro po pracy"). W trybie quizowym, gdy zdanie jest zapisane, zamiast karty "sklep → ?" pokaż kartę `"Idę do _____ jutro po pracy → ?"` z podświetloną luką. Po odsłonięciu: pełne zdanie z boldem słowa. Jeśli brak zdania — standardowa karta słowo/tłumaczenie bez zmian. Opcja bulk: przycisk "Wygeneruj zdania dla słów bez kontekstu (AI)" → Claude API generuje zdania zbiorczo jednym wywołaniem dla max 20 słów, zapisuje do bazy. Nowy preset w quiz mode: "Tryb zdań" — pokazuje tylko karty ze zdaniami, pomija izolowane pary.
+   *Dlaczego warto: Clozemaster i Babbel opierają całą metodologię na "cloze deletion" — nauka słowa w izolacji (polski = school) kontra w kontekście ("Idę do szkoły") aktywuje inną pamięć proceduralną i daje kontekst gramatyczny za darmo. Użytkownicy Clozemastera regularnie raportują że słowa "przyklejają się" bez powtórzeń, bo mózg zapamiętuje zdanie a nie parę. Dla osoby uczącej się polskiego do użytku codziennego (nie egzaminu), wiedza "kiedy użyć tego słowa" jest ważniejsza niż poprawna translacja. Implementacja: 1 pole `example_sentence TEXT` w tabeli words + modyfikacja komponentu QuizCard.*
+   *Inspiracja: Clozemaster cloze deletion, Babbel sentence-first vocabulary*
+
+3. **[Kalistenika] — Wykres Rekordu Osobistego na Ćwiczenie (PR Chart)**
+   W module Kalistenika, obok nazwy każdego ćwiczenia w historii sesji, dodaj ikonę 📈 otwierającą slide-over drawer z wykresem postępu. Wykres: linia czasowa (oś X = daty sesji, oś Y = max reps w sesji lub max weight). Na wykresie: zielone kółko z gwiazdką ⭐ przy każdym nowym rekordzie osobistym (PR). Obok wykresu: 3 statystyki — `Aktualny PR: 25 reps (12.11.2026)`, `Poprawa w 30 dni: +4 reps (+19%)`, `Sesje łącznie: 18`. W nagłówku modułu Kalistenika: małe badge `⭐ Nowy PR!` przez 24h po ustanowieniu rekordu personalnego. W planie tygodniowym pod nazwą ćwiczenia: `Pull-up — PR: 11 reps` zamiast pustego miejsca. Implementacja: SQL `SELECT MAX(reps) as pr, session_date FROM exercise_logs GROUP BY exercise_name, session_date ORDER BY session_date` → Recharts LineChart z custom dot.
+   *Dlaczego warto: Progression App i Hevy opierają retencję właśnie na "celebrating PRs" — zobaczenie własnej linii wzrostu jest silniejszym dowodem postępu niż jakikolwiek streak. Dla kalisteniki bodyweight postęp jest wolniejszy i mniej oczywisty niż przy ciężarach, więc wizualizacja małych przyrostów reps jest kluczowa dla motywacji długoterminowej. Aktualnie dane reps są logowane per set, ale nie ma żadnego widoku "jak rosła moja max liczba pompek przez 3 miesiące" — to ogromny gap w module który sprawia że trud jest niewidoczny.*
+   *Inspiracja: Progression App PR tracking, Hevy workout tracker*
+
+4. **[Statystyki] — Roczna Heatmapa Aktywności (365-Day GitHub Contribution Graph)**
+   Aktualnie w Statystykach jest tylko 7-dniowa siatka nawyków. Dodaj poniżej nową sekcję "Rok w jednym spojrzeniu": siatka 52 × 7 (tygodnie × dni) = 364 komórki, każda = 1 dzień. Kolor oparty na "daily completeness score" (0–100%): 0% = `#0D1F14` (prawie czarny), 1–40% = `#14532D`, 41–75% = `#16A34A`, 76–100% = `#4ADE80`. Hover na komórce: tooltip `Pon 17.11.2026: 85% — Trening ✓, Słówka ✓, Review ✓, 1 zadanie ✓`. Rok zaczyna się od 1 stycznia — scroll do dzisiaj automatycznie. Toggle u góry: "Wszystkie aktywności" vs. "Tylko nawyki" vs. "Tylko trening". Eksport jako PNG 1200×200px do social media — przycisk "Zapisz rok" generujący canvas.toDataURL(). Implementacja: 365 wierszy SQL + CSS grid, brak nowych tabel jeśli Daily Score jest już zaimplementowany.
+   *Dlaczego warto: GitHub contribution graph stał się ikonicznym motywatorem — "don't break the chain" działa wizualnie bo widać 11 miesięcy zielonej siatki i nie chce się dodać szarego dnia. Obsidian Heatmap Calendar plugin ma tysiące pobrań dokładnie z tego powodu. Dla 19-latka budującego nawyki na lata, widok "cały czerwiec był zielony" jest innym poziomem satysfakcji niż licznik streaka. Aktualnie dane są w bazie — potrzeba tylko agregacji 365 wierszy zamiast 7, co jest trywialnym rozszerzeniem obecnej logiki.*
+   *Inspiracja: GitHub contribution graph, Obsidian Heatmap Calendar plugin*
+
+5. **[Review] — Rotacja 7 Pytań Wieczornych (Jedno na Każdy Dzień Tygodnia)**
+   Stałe pola Review ("co poszło dobrze", "co poprawić", "plan na jutro") wypełniane codziennie stają się schematyczne po kilku tygodniach — odpowiedzi zaczynają być automatyczne i płytkie. Dodaj nad standardowymi polami **jedno rotacyjne pytanie refleksji** zmieniające się według dnia tygodnia: `Pon: "Co chcę osiągnąć w tym tygodniu? Jaka jest moja główna intencja?"` / `Wt: "Czego się dziś nauczyłem — o tradingu, kalistenice lub sobie?"` / `Śr: "Środek tygodnia — czy jestem na dobrej drodze do tygodniowych celów?"` / `Czw: "Jeden konkretny błąd z dziś, który chcę naprawić jutro"` / `Pt: "Trzy wygrane tego tygodnia (mogą być małe)"` / `Sob: "Jak rośnę? Czym różnię się od siebie sprzed miesiąca?"` / `Nd: "Jeden priorytet na przyszły tydzień — co musi się wydarzyć?"`. Odpowiedź zapisuje się jako `weekly_prompt_answer TEXT` w tabeli daily_reviews, obok prompt_text. W archiwum: pytanie widoczne obok odpowiedzi. AI summary Clauda uwzględnia odpowiedź na pytanie tygodniowe jako dodatkowy kontekst.
+   *Dlaczego warto: Reflectly zbudowało przewagę nad Day One dokładnie na rotacji promptów — użytkownicy raportują że "nie wiedziałem co pisać przed Reflectly", a rotacja wymusza nową perspektywę każdego dnia. Dla 19-latka który dopiero buduje nawyk refleksji, stałe pytania prowadzą do automatycznych odpowiedzi ("trening – dobry"), a rotacja zmusza do głębszego myślenia. Piątkowe "3 wygrane" i niedzielne "priorytet tygodnia" są szczególnie wartościowe jako weekly checkpoint, który aktualnie w dashboardzie nie istnieje. Implementacja: `const prompts = { 1: '...', 2: '...', ... }`, `new Date().getDay()`, 1 nowe pole w tabeli daily_reviews — 20 minut roboty.*
+   *Inspiracja: Reflectly rotating prompts, 5-Minute Journal weekly review*
+
+---
